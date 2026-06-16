@@ -64,6 +64,12 @@ export class AuthService {
     }
   }
 
+  clearMustChangePwd(): void {
+    const user = this._currentUser();
+    if (user) {
+      this._currentUser.set({ ...user, mustChangePassword: false });
+    }
+  }
   // ----------------------------------------------------------------
   // Private helpers
   // ----------------------------------------------------------------

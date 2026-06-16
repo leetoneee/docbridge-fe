@@ -6,12 +6,12 @@ export const AUTH_ROUTES: Routes = [
     loadComponent: () =>
       import('./login/login').then(m => m.Login),
   },
-  // {
-  //   path: 'change-password-first',
-  //   loadComponent: () =>
-  //     import('./change-password-first/change-password-first')
-  //       .then(m => m.ChangePasswordFirstComponent),
-  // },
+  {
+    path: 'change-password-first',
+    loadComponent: () =>
+      import('./change-password-first/change-password-first')
+        .then(m => m.ChangePasswordFirst),
+  },
   {
     path: '',
     redirectTo: 'login',
