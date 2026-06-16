@@ -13,6 +13,12 @@ export const AUTH_ROUTES: Routes = [
         .then(m => m.ChangePasswordFirst),
   },
   {
+    path: 'change-password',
+    loadComponent: () =>
+      import('./change-password/change-password')
+        .then(m => m.ChangePassword),
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',

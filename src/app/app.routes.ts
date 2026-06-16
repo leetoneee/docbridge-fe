@@ -2,33 +2,30 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { firstLoginGuard } from './core/guards/first-login.guard';
 import { roleGuard } from './core/guards/role.guard';
-import { Login } from './features/auth/login/login';
 
 export const routes: Routes = [
   // Public routes
   {
     path: 'auth',
-    loadChildren: () =>
-      import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES),
+    loadChildren: () => import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
 
   // Admin / Operator shell
-  // {
-  //   path: '',
-  //   loadComponent: () =>
-  //     import('./layouts/admin-layout/admin-layout.component')
-  //       .then(m => m.AdminLayoutComponent),
-  //   canActivate: [authGuard, firstLoginGuard],
-  //   children: [
-  //     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  //     {
-  //       path: 'dashboard',
-  //       canActivate: [roleGuard],
-  //       data: { roles: ['ADMIN', 'OPERATOR'] },
-  //       loadChildren: () =>
-  //         import('./features/dashboard/dashboard.routes')
-  //           .then(m => m.DASHBOARD_ROUTES),
-  //     },
+  {
+    path: '',
+    loadComponent: () => import('./layouts/admin-layout/admin-layout').then((m) => m.AdminLayout),
+    canActivate: [authGuard, firstLoginGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'dashboard',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'OPERATOR'] },
+        loadChildren: () =>
+          import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
+      },
+    ],
+  },
   //     {
   //       path: 'systems',
   //       canActivate: [roleGuard],

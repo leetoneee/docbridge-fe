@@ -3,7 +3,6 @@
   <!-- Logo -->
   <div class="flex items-center gap-2 px-4 py-4">
     <span class="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-      <!-- Network icon -->
       <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2"
            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -25,59 +24,61 @@
       @for (item of group.items; track item.route) {
         <a
           [routerLink]="item.route"
-          routerLinkActive="border-l-[3px] border-primary bg-primary/5 pl-[7px] font-medium text-primary"
+          #rla="routerLinkActive"
+          routerLinkActive
           [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
-          class="mx-2 flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm text-text-secondary transition-colors hover:bg-secondary"
+          [class]="'mx-2 flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm transition-colors '
+            + (rla.isActive
+              ? 'border-l-[3px] border-primary bg-primary/5 pl-1.75 font-medium text-primary'
+              : 'text-text-secondary hover:bg-secondary')"
         >
-            <!-- Dashboard -->
-            @if (item.icon === 'dashboard') {
-              <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                   fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/>
-                <rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
-              </svg>
-            }
-            @if (item.icon === 'network') {
-              <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                   fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="16" y="16" width="6" height="6" rx="1"/>
-                <rect x="2" y="16" width="6" height="6" rx="1"/>
-                <rect x="9" y="2" width="6" height="6" rx="1"/>
-                <path d="M5 16v-4h14v4"/><path d="M12 12V8"/>
-              </svg>
-            }
-            @if (item.icon === 'building') {
-              <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                   fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
-                <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
-                <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
-                <path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
-              </svg>
-            }
-            @if (item.icon === 'users') {
-              <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                   fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-            }
-            @if (item.icon === 'shield') {
-              <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                   fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
-                <path d="m9 12 2 2 4-4"/>
-              </svg>
-            }
-            @if (item.icon === 'scroll') {
-              <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                   fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/>
-                <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/>
-              </svg>
-            }
-
+          @if (item.icon === 'dashboard') {
+            <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/>
+              <rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
+            </svg>
+          }
+          @if (item.icon === 'network') {
+            <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="16" y="16" width="6" height="6" rx="1"/>
+              <rect x="2" y="16" width="6" height="6" rx="1"/>
+              <rect x="9" y="2" width="6" height="6" rx="1"/>
+              <path d="M5 16v-4h14v4"/><path d="M12 12V8"/>
+            </svg>
+          }
+          @if (item.icon === 'building') {
+            <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+              <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+              <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
+              <path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+            </svg>
+          }
+          @if (item.icon === 'users') {
+            <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          }
+          @if (item.icon === 'shield') {
+            <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+          }
+          @if (item.icon === 'scroll') {
+            <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/>
+              <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/>
+            </svg>
+          }
           {{ item.label }}
         </a>
       }
@@ -86,7 +87,6 @@
 
   <!-- Footer -->
   <div class="mt-auto border-t border-border px-3 py-3">
-    <!-- User info -->
     <div class="flex items-center gap-2.5 px-1 py-1.5">
       <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
         {{ currentUser.initials() }}
@@ -96,14 +96,9 @@
         <p class="text-[11px] text-text-muted">{{ currentUser.roleLabel() }}</p>
       </div>
     </div>
-    <!-- Actions -->
     <div class="mt-1 flex flex-col gap-0.5">
-      <button
-        type="button"
-        (click)="onChangePassword()"
-        class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-[13px] text-text-secondary transition-colors hover:bg-secondary"
-      >
-        <!-- KeyRound icon -->
+      <button type="button" (click)="onChangePassword()"
+        class="flex w-full items-center hover:cursor-pointer gap-2 rounded-md px-2 py-1.5 text-[13px] text-text-secondary transition-colors hover:bg-secondary">
         <svg class="size-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="7" cy="17" r="3"/><path d="M10.26 17H14l1-4H7.26"/>
@@ -111,12 +106,8 @@
         </svg>
         Đổi mật khẩu
       </button>
-      <button
-        type="button"
-        (click)="onLogout()"
-        class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-[13px] text-text-secondary transition-colors hover:bg-secondary"
-      >
-        <!-- LogOut icon -->
+      <button type="button" (click)="confirmLogout()"
+        class="flex w-full items-center hover:cursor-pointer gap-2 rounded-md px-2 py-1.5 text-[13px] text-text-secondary transition-colors hover:bg-secondary">
         <svg class="size-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -129,3 +120,37 @@
   </div>
 
 </aside>
+
+<!-- Logout confirm modal -->
+@if (showLogoutConfirm()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4">
+    <div class="w-full max-w-sm rounded-[10px] border border-border bg-surface shadow-[0_10px_40px_rgba(0,0,0,0.18)]">
+      <!-- Header -->
+      <div class="flex items-start gap-3 border-b border-border p-5">
+        <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-destructive/10">
+          <svg class="size-4 text-destructive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </div>
+        <div class="flex flex-col gap-0.5">
+          <h3 class="text-sm font-semibold text-foreground">Xác nhận đăng xuất</h3>
+          <p class="text-[13px] text-text-secondary">Bạn có chắc muốn đăng xuất khỏi hệ thống không?</p>
+        </div>
+      </div>
+      <!-- Footer -->
+      <div class="flex items-center justify-end gap-2 p-4">
+        <button type="button" (click)="cancelLogout()"
+          class="h-9 rounded-lg px-4 text-sm font-medium text-text-secondary transition-colors hover:bg-secondary">
+          Hủy
+        </button>
+        <button type="button" (click)="doLogout()"
+          class="h-9 rounded-lg bg-destructive px-4 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90">
+          Đăng xuất
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CurrentUserService } from '../../../core/services/current-user.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -16,6 +16,7 @@ interface NavGroup {
 
 @Component({
   selector: 'app-admin-sidebar',
+  standalone: true,
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './admin-sidebar.html',
   styleUrl: './admin-sidebar.css',
@@ -24,6 +25,9 @@ export class AdminSidebar {
   private router = inject(Router);
   currentUser    = inject(CurrentUserService);
   private auth   = inject(AuthService);
+
+  showLogoutConfirm    = signal(false);
+  showChangePassword   = signal(false);
 
   readonly navGroups: NavGroup[] = [
     {
@@ -58,7 +62,16 @@ export class AdminSidebar {
     this.router.navigate(['/auth/change-password']);
   }
 
-  onLogout(): void {
+  confirmLogout(): void {
+    this.showLogoutConfirm.set(true);
+  }
+
+  cancelLogout(): void {
+    this.showLogoutConfirm.set(false);
+  }
+
+  doLogout(): void {
+    this.showLogoutConfirm.set(false);
     this.auth.logout();
   }
 }
