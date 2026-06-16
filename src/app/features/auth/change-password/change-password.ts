@@ -4,6 +4,7 @@ import { PasswordFieldComponent } from '../../../shared/components/password-fiel
 import { PasswordStrengthComponent } from '../../../shared/components/password-strength/password-strength';
 import { AuthApiService } from '../services/auth-api.service';
 import { Router } from '@angular/router';
+import { CurrentUserService } from '../../../core/services/current-user.service';
 
 function passwordStrengthLevel(password: string): 0 | 1 | 2 | 3 {
   if (!password) return 0;
@@ -32,9 +33,10 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
   styleUrl: './change-password.css',
 })
 export class ChangePassword {
-    private fb     = inject(FormBuilder);
+  private fb     = inject(FormBuilder);
   private api    = inject(AuthApiService);
   private router = inject(Router);
+  private currentUser = inject(CurrentUserService);
 
   isLoading   = signal(false);
   serverError = signal<string | null>(null);
@@ -69,7 +71,12 @@ export class ChangePassword {
   }
 
   onClose(): void {
-    this.router.navigate(['..']);
+    const role = this.currentUser.role();
+    if (role === 'UNIT') {
+      this.router.navigate(['/portal/outbox']);
+    } else {
+      this.router.navigate(['/dashboard']);
+    }
   }
 
   onSubmit(): void {
