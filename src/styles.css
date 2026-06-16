@@ -1,3 +1,80 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+@theme {
+  /* ----------------------------------------
+     Colors
+  ---------------------------------------- */
+  --color-primary:            #2563EB;
+  --color-primary-hover:      #1D4ED8;
+  --color-primary-foreground: #FFFFFF;
+  --color-background:         #F8FAFC;
+  --color-surface:            #FFFFFF;
+  --color-border:             #E2E8F0;
+  --color-foreground:         #0F172A;
+  --color-text-secondary:     #475569;
+  --color-text-muted:         #94A3B8;
+  --color-destructive:        #DC2626;
+  --color-success:            #16A34A;
+  --color-warning:            #D97706;
+  --color-ring:               #2563EB;
+
+  /* ----------------------------------------
+     Status Badge Colors
+  ---------------------------------------- */
+  --color-status-active-bg:       #DCFCE7;
+  --color-status-active-text:     #15803D;
+  --color-status-active-border:   #BBF7D0;
+
+  --color-status-locked-bg:       #FEE2E2;
+  --color-status-locked-text:     #DC2626;
+  --color-status-locked-border:   #FECACA;
+
+  --color-status-pending-bg:      #FEF3C7;
+  --color-status-pending-text:    #B45309;
+  --color-status-pending-border:  #FDE68A;
+
+  --color-status-rejected-bg:     #F1F5F9;
+  --color-status-rejected-text:   #64748B;
+  --color-status-rejected-border: #E2E8F0;
+
+  --color-status-sent-bg:         #DBEAFE;
+  --color-status-sent-text:       #1D4ED8;
+  --color-status-sent-border:     #BFDBFE;
+
+  --color-status-accepted-bg:     #DCFCE7;
+  --color-status-accepted-text:   #15803D;
+  --color-status-accepted-border: #BBF7D0;
+
+  --color-status-cancelled-bg:    #F1F5F9;
+  --color-status-cancelled-text:  #64748B;
+  --color-status-cancelled-border:#E2E8F0;
+
+  /* ----------------------------------------
+     Typography
+  ---------------------------------------- */
+  --font-sans: 'Inter', ui-sans-serif, -apple-system, sans-serif;
+
+  --font-size-page-title:      1.25rem;
+  --font-size-section-heading: 1rem;
+  --font-size-body:            0.875rem;
+  --font-size-label:           0.8125rem;
+  --font-size-caption:         0.75rem;
+}
+
+/* ----------------------------------------
+   Base styles
+---------------------------------------- */
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-size: var(--font-size-body);
+    color: var(--color-foreground);
+    background-color: var(--color-background);
+  }
+
+  * {
+    border-color: var(--color-border);
+  }
+}

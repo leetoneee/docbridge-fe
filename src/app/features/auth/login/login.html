@@ -1,0 +1,129 @@
+<div class="flex min-h-screen w-full items-center justify-center bg-background p-4">
+  <div class="flex min-h-160 w-full max-w-4xl overflow-hidden rounded-[10px] border border-border bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+
+    <!-- Left panel — brand -->
+    <div class="hidden w-1/2 flex-col justify-between bg-primary p-10 text-primary-foreground md:flex">
+      <div class="flex items-center gap-2">
+        <div class="flex size-9 items-center justify-center rounded-lg bg-primary-foreground/15">
+          <!-- Layers icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        <span class="text-lg font-semibold">DocBridge</span>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <h2 class="text-pretty text-2xl font-semibold leading-snug">
+          Nền tảng liên thông văn bản tập trung
+        </h2>
+        <p class="max-w-sm text-pretty text-sm leading-relaxed text-primary-foreground/80">
+          Hệ thống điều phối và giám sát trao đổi văn bản giữa các đơn vị liên thông.
+        </p>
+      </div>
+
+      <p class="text-xs text-primary-foreground/60">DocBridge v1.0</p>
+    </div>
+
+    <!-- Right panel — form -->
+    <div class="flex w-full items-center justify-center bg-background p-6 md:w-1/2">
+      <div class="flex w-full max-w-100 flex-col gap-6">
+
+        <!-- Mobile brand -->
+        <div class="flex items-center gap-2 md:hidden">
+          <div class="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <span class="text-lg font-semibold text-foreground">DocBridge</span>
+        </div>
+
+        <!-- Heading -->
+        <div class="flex flex-col gap-1">
+          <h1 class="text-xl font-semibold text-foreground">Đăng nhập</h1>
+          <p class="text-sm text-text-muted">Nhập thông tin tài khoản để tiếp tục</p>
+        </div>
+
+        <!-- Form -->
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4" novalidate>
+
+          <!-- Email -->
+          <div class="flex flex-col gap-1.5">
+            <label for="login-email" class="text-[13px] font-medium text-foreground">
+              Email
+            </label>
+            <input
+              id="login-email"
+              type="email"
+              formControlName="email"
+              placeholder="email@example.com"
+              autocomplete="email"
+              [class]="'h-10 w-full rounded-lg border bg-surface px-3 text-sm text-foreground placeholder:text-text-muted outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/50 ' +
+                (emailCtrl.invalid && emailCtrl.touched
+                  ? 'border-destructive focus-visible:ring-destructive/30'
+                  : 'border-input focus-visible:border-ring')"
+            />
+            @if (emailCtrl.invalid && emailCtrl.touched) {
+              <p class="text-xs text-destructive">
+                @if (emailCtrl.hasError('required')) { Email không được để trống }
+                @else if (emailCtrl.hasError('email')) { Email không đúng định dạng }
+              </p>
+            }
+          </div>
+
+          <!-- Password -->
+          <app-password-field
+            formControlName="password"
+            label="Mật khẩu"
+            inputId="login-password"
+            placeholder="••••••••"
+            [error]="passwordCtrl.invalid && passwordCtrl.touched ? 'Mật khẩu không được để trống' : null"
+          />
+
+          <!-- Error alert -->
+          @if (errorMessage()) {
+            <div
+              role="alert"
+              class="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2.5"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="mt-0.5 size-4 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p class="text-[13px] leading-relaxed text-destructive">
+                {{ errorMessage() }}
+              </p>
+            </div>
+          }
+
+          <!-- Submit -->
+          <button
+            type="submit"
+            [disabled]="isLoading()"
+            class="h-10 w-full rounded-lg bg-primary text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            @if (isLoading()) {
+              <span class="flex items-center justify-center gap-2">
+                <svg class="size-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 22 6.477 22 12h-4z"/>
+                </svg>
+                Đang đăng nhập...
+              </span>
+            } @else {
+              Đăng nhập
+            }
+          </button>
+        </form>
+
+        <p class="text-center text-xs text-text-muted">
+          DocBridge v1.0 · Hệ thống quản lý văn bản liên thông
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
