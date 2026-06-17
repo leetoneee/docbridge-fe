@@ -14,7 +14,8 @@ import {
   ApexTooltip,
   ApexXAxis,
   ApexYAxis,
-  ChartComponent
+  ChartComponent,
+  NgApexchartsModule
 } from 'ng-apexcharts';
 
 interface KpiCard {
@@ -30,32 +31,35 @@ const RANGE_LABELS: { value: TimeRange; label: string }[] = [
   { value: '90_DAYS', label: '90 ngày' },
 ];
 
-export type LineChartOptions = {
+interface AreaChartOptions {
   series: ApexAxisChartSeries;
   chart: ApexChart;
+  xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
   stroke: ApexStroke;
   fill: ApexFill;
-  xaxis: ApexXAxis;
-  yaxis: ApexYAxis;
   grid: ApexGrid;
   dataLabels: ApexDataLabels;
   tooltip: ApexTooltip;
-};
+  colors: string[];
+}
 
-export type BarChartOptions = {
+interface BarChartOptions {
   series: ApexAxisChartSeries;
   chart: ApexChart;
   xaxis: ApexXAxis;
   yaxis: ApexYAxis;
+  plotOptions: any;
   grid: ApexGrid;
   dataLabels: ApexDataLabels;
   tooltip: ApexTooltip;
-};
+  colors: string[];
+}
 
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [ChartComponent, StatusBadgeComponent, DecimalPipe],
+  imports: [ChartComponent, NgApexchartsModule, StatusBadgeComponent, DecimalPipe],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
 })
@@ -81,107 +85,93 @@ export class DashboardPage {
   });
 
   // ----- Area chart: Giao dịch theo thời gian -----
-  readonly areaChart = computed<LineChartOptions>(() => {
+  areaChartOptions = computed<AreaChartOptions>(() => {
     const s = this.summary();
-
     return {
       series: [
         {
           name: 'Giao dịch',
-          data: s?.txOverTime.map(x => x.value) ?? []
-        }
+          data: s?.txOverTime.map(p => p.value) ?? [],
+        },
       ],
       chart: {
         type: 'area',
         height: 260,
-        toolbar: {
-          show: false
-        },
-        zoom: {
-          enabled: false
-        }
+        toolbar: { show: false },
+        fontFamily: 'inherit',
+      },
+      xaxis: {
+        categories: s?.txOverTime.map(p => p.date) ?? [],
+        labels: { style: { colors: '#475569', fontSize: '12px' } },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+      },
+      yaxis: {
+        labels: { style: { colors: '#475569', fontSize: '12px' } },
       },
       stroke: {
         curve: 'smooth',
-        width: 2
+        width: 2,
       },
       fill: {
         type: 'gradient',
         gradient: {
           shadeIntensity: 1,
-          opacityFrom: 0.25,
-          opacityTo: 0.03
-        }
-      },
-      dataLabels: {
-        enabled: false
-      },
-      xaxis: {
-        categories: s?.txOverTime.map(x => x.date) ?? [],
-        labels: {
-          style: {
-            colors: '#475569'
-          }
-        }
-      },
-      yaxis: {
-        labels: {
-          style: {
-            colors: ['#475569']
-          }
-        }
+          opacityFrom: 0.3,
+          opacityTo: 0.02,
+          stops: [0, 95],
+        },
       },
       grid: {
-        borderColor: '#E2E8F0'
+        borderColor: '#E2E8F0',
+        strokeDashArray: 0,
+        xaxis: { lines: { show: false } },
       },
-      tooltip: {
-        theme: 'light'
-      }
+      dataLabels: { enabled: false },
+      tooltip: { enabled: true },
+      colors: ['#2563EB'],
     };
   });
 
   // ----- Bar chart: Giao dịch theo hệ thống -----
-  readonly systemChart = computed<BarChartOptions>(() => {
+  barChartOptions = computed<BarChartOptions>(() => {
     const s = this.summary();
-
     return {
       series: [
         {
           name: 'Giao dịch',
-          data: s?.txBySystem.map(x => x.value) ?? []
-        }
+          data: s?.txBySystem.map(p => p.value) ?? [],
+        },
       ],
       chart: {
         type: 'bar',
         height: 260,
-        toolbar: {
-          show: false
-        }
-      },
-      dataLabels: {
-        enabled: false
+        toolbar: { show: false },
+        fontFamily: 'inherit',
       },
       xaxis: {
-        categories: s?.txBySystem.map(x => x.system) ?? [],
-        labels: {
-          style: {
-            colors: '#475569'
-          }
-        }
+        categories: s?.txBySystem.map(p => p.system) ?? [],
+        labels: { style: { colors: '#475569', fontSize: '11px' } },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
       },
       yaxis: {
-        labels: {
-          style: {
-            colors: ['#475569']
-          }
-        }
+        labels: { style: { colors: '#475569', fontSize: '12px' } },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          columnWidth: '50%',
+        },
       },
       grid: {
-        borderColor: '#E2E8F0'
+        borderColor: '#E2E8F0',
+        strokeDashArray: 0,
+        xaxis: { lines: { show: false } },
       },
-      tooltip: {
-        theme: 'light'
-      }
+      dataLabels: { enabled: false },
+      tooltip: { enabled: true },
+      colors: ['#2563EB'],
     };
   });
 

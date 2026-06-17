@@ -71,35 +71,34 @@
             }
           </div>
         </div>
-        <div class="h-65 w-full">
-          <apx-chart
-            [series]="areaChart().series"
-            [chart]="areaChart().chart"
-            [stroke]="areaChart().stroke"
-            [fill]="areaChart().fill"
-            [xaxis]="areaChart().xaxis"
-            [yaxis]="areaChart().yaxis"
-            [grid]="areaChart().grid"
-            [dataLabels]="areaChart().dataLabels"
-            [tooltip]="areaChart().tooltip">
-          </apx-chart>
-        </div>
+        <apx-chart
+          [series]="areaChartOptions().series"
+          [chart]="areaChartOptions().chart"
+          [xaxis]="areaChartOptions().xaxis"
+          [yaxis]="areaChartOptions().yaxis"
+          [stroke]="areaChartOptions().stroke"
+          [fill]="areaChartOptions().fill"
+          [grid]="areaChartOptions().grid"
+          [dataLabels]="areaChartOptions().dataLabels"
+          [tooltip]="areaChartOptions().tooltip"
+          [colors]="areaChartOptions().colors"
+        ></apx-chart>
       </div>
 
       <!-- Bar chart -->
       <div class="rounded-[10px] border border-border bg-surface p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)] lg:col-span-2">
         <h2 class="mb-4 text-base font-semibold text-foreground">Giao dịch theo hệ thống liên thông</h2>
-        <div class="h-65 w-full">
-          <apx-chart
-            [series]="systemChart().series"
-            [chart]="systemChart().chart"
-            [xaxis]="systemChart().xaxis"
-            [yaxis]="systemChart().yaxis"
-            [grid]="systemChart().grid"
-            [dataLabels]="systemChart().dataLabels"
-            [tooltip]="systemChart().tooltip">
-          </apx-chart>
-        </div>
+        <apx-chart
+          [series]="barChartOptions().series"
+          [chart]="barChartOptions().chart"
+          [xaxis]="barChartOptions().xaxis"
+          [yaxis]="barChartOptions().yaxis"
+          [plotOptions]="barChartOptions().plotOptions"
+          [grid]="barChartOptions().grid"
+          [dataLabels]="barChartOptions().dataLabels"
+          [tooltip]="barChartOptions().tooltip"
+          [colors]="barChartOptions().colors"
+        ></apx-chart>
       </div>
     </div>
 
