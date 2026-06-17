@@ -1,1 +1,147 @@
-<p>dashboard-page works!</p>
+<div class="flex flex-col gap-4">
+
+  <!-- Page header -->
+  <h1 class="text-xl font-semibold text-foreground">Tổng quan hệ thống</h1>
+
+  @if (isLoading()) {
+    <p class="text-sm text-text-secondary">Đang tải dữ liệu...</p>
+  } @else {
+
+    <!-- KPI row -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      @for (kpi of kpiCards(); track kpi.label) {
+        <div class="flex min-h-25 items-center gap-4 rounded-[10px] border border-border bg-surface p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+          <span
+            class="flex size-11 shrink-0 items-center justify-center rounded-lg"
+            [style.background-color]="kpi.tint + '1A'"
+            [style.color]="kpi.tint"
+          >
+            @if (kpi.icon === 'transactions') {
+              <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>
+              </svg>
+            }
+            @if (kpi.icon === 'pending') {
+              <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+            }
+            @if (kpi.icon === 'units') {
+              <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+                <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+                <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
+                <path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+              </svg>
+            }
+            @if (kpi.icon === 'alert') {
+              <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            }
+          </span>
+          <div class="min-w-0">
+            <p class="text-2xl font-bold leading-tight text-foreground">{{ kpi.value | number }}</p>
+            <p class="truncate text-xs text-text-muted">{{ kpi.label }}</p>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Charts row -->
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-5">
+
+      <!-- Area chart -->
+      <div class="rounded-[10px] border border-border bg-surface p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)] lg:col-span-3">
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <h2 class="text-base font-semibold text-foreground">Số giao dịch theo thời gian</h2>
+          <div class="flex items-center gap-1 rounded-lg border border-border p-0.5">
+            @for (r of rangeOptions; track r.value) {
+              <button
+                type="button"
+                (click)="onRangeChange(r.value)"
+                class="h-6 rounded-md px-2 text-xs font-medium transition-colors"
+                [class.bg-primary]="selectedRange() === r.value"
+                [class.text-primary-foreground]="selectedRange() === r.value"
+                [class.text-text-secondary]="selectedRange() !== r.value"
+                [class.hover:bg-background]="selectedRange() !== r.value"
+              >
+                {{ r.label }}
+              </button>
+            }
+          </div>
+        </div>
+        <div class="h-65 w-full">
+          <apx-chart
+            [series]="areaChart().series"
+            [chart]="areaChart().chart"
+            [stroke]="areaChart().stroke"
+            [fill]="areaChart().fill"
+            [xaxis]="areaChart().xaxis"
+            [yaxis]="areaChart().yaxis"
+            [grid]="areaChart().grid"
+            [dataLabels]="areaChart().dataLabels"
+            [tooltip]="areaChart().tooltip">
+          </apx-chart>
+        </div>
+      </div>
+
+      <!-- Bar chart -->
+      <div class="rounded-[10px] border border-border bg-surface p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)] lg:col-span-2">
+        <h2 class="mb-4 text-base font-semibold text-foreground">Giao dịch theo hệ thống liên thông</h2>
+        <div class="h-65 w-full">
+          <apx-chart
+            [series]="systemChart().series"
+            [chart]="systemChart().chart"
+            [xaxis]="systemChart().xaxis"
+            [yaxis]="systemChart().yaxis"
+            [grid]="systemChart().grid"
+            [dataLabels]="systemChart().dataLabels"
+            [tooltip]="systemChart().tooltip">
+          </apx-chart>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent activity table -->
+    <div class="rounded-[10px] border border-border bg-surface p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+      <h2 class="mb-4 text-base font-semibold text-foreground">Giao dịch gần đây</h2>
+      <div class="w-full overflow-x-auto">
+        <table class="w-full caption-bottom text-sm">
+          <thead>
+            <tr class="border-b border-border">
+              <th class="h-10 px-2 text-left align-middle text-sm font-medium text-foreground">Mã giao dịch</th>
+              <th class="h-10 px-2 text-left align-middle text-sm font-medium text-foreground">Đơn vị gửi</th>
+              <th class="h-10 px-2 text-left align-middle text-sm font-medium text-foreground">Đơn vị nhận</th>
+              <th class="h-10 px-2 text-left align-middle text-sm font-medium text-foreground">Trạng thái</th>
+              <th class="h-10 px-2 text-right align-middle text-sm font-medium text-foreground">Thời gian</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (tx of summary()?.recentTransactions; track tx.code) {
+              <tr class="border-b border-border transition-colors hover:bg-background last:border-0">
+                <td class="p-2 align-middle font-mono text-[13px] text-foreground">{{ tx.code }}</td>
+                <td class="p-2 align-middle text-text-secondary">{{ tx.from }}</td>
+                <td class="p-2 align-middle text-text-secondary">{{ tx.to }}</td>
+                <td class="p-2 align-middle">
+                  <app-status-badge [status]="tx.status" />
+                </td>
+                <td class="p-2 align-middle text-right text-[13px] text-text-secondary">{{ tx.time }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-3 flex justify-end">
+        <button
+          type="button"
+          (click)="onViewAllTransactions()"
+          class="text-sm font-medium text-primary underline-offset-4 hover:underline"
+        >
+          Xem tất cả
+        </button>
+      </div>
+    </div>
+
+  }
+</div>
