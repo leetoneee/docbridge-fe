@@ -1,0 +1,11 @@
+<span class="group/tooltip relative inline-flex">
+  <ng-content></ng-content>
+  <span
+    class="pointer-events-none absolute -top-9 left-1/2 z-50 -translate-x-1/2 scale-95 whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-xs text-background opacity-0 transition-all duration-100 group-hover/tooltip:scale-100 group-hover/tooltip:opacity-100"
+  >
+    {{ label() }}
+    <span
+      class="absolute left-1/2 top-full -translate-x-1/2 -translate-y-px size-2 rotate-45 rounded-xs bg-foreground"
+    ></span>
+  </span>
+</span>

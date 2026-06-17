@@ -24,16 +24,16 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
       },
+      {
+        path: 'systems',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'OPERATOR'] },
+        loadChildren: () =>
+          import('./features/interop-system/interop-system.routes')
+            .then(m => m.INTEROP_SYSTEM_ROUTES),
+      },
     ],
   },
-  //     {
-  //       path: 'systems',
-  //       canActivate: [roleGuard],
-  //       data: { roles: ['ADMIN', 'OPERATOR'] },
-  //       loadChildren: () =>
-  //         import('./features/interop-system/interop-system.routes')
-  //           .then(m => m.INTEROP_SYSTEM_ROUTES),
-  //     },
   //     {
   //       path: 'units',
   //       canActivate: [roleGuard],
