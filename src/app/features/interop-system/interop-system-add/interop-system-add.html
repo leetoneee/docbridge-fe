@@ -1,0 +1,77 @@
+<app-modal [open]="open()" title="Thêm hệ thống liên thông" (openChange)="openChange.emit($event)">
+  <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="lucide lucide-circle-plus-icon lucide-circle-plus size-5 text-primary">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M8 12h8" />
+    <path d="M12 8v8" />
+  </svg>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+    <div class="space-y-1.5">
+      <label for="sys-name" class="flex items-center gap-2 text-sm font-medium text-foreground">
+        Tên hệ thống <span class="text-destructive">*</span>
+      </label>
+      <input id="sys-name" type="text" formControlName="name" placeholder="Nhập tên hệ thống..."
+        class="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+      <p class="text-xs text-destructive">Tên hệ thống là bắt buộc.</p>
+      }
+    </div>
+
+    <div class="space-y-1.5">
+      <label for="sys-code" class="flex items-center gap-2 text-sm font-medium text-foreground">
+        Mã hệ thống <span class="text-destructive">*</span>
+      </label>
+      <input id="sys-code" type="text" formControlName="code" placeholder="VD: EOFFICE" (input)="onCodeInput($event)"
+        class="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 font-mono text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+      <p class="text-xs text-text-muted">
+        Viết hoa, không dấu, không khoảng trắng. Không thể thay đổi sau khi đã có đơn vị.
+      </p>
+      @if (form.controls.code.touched && form.controls.code.errors?.['required']) {
+      <p class="text-xs text-destructive">Mã hệ thống là bắt buộc.</p>
+      } @else if (form.controls.code.touched && form.controls.code.errors?.['pattern']) {
+      <p class="text-xs text-destructive">
+        Mã hệ thống chỉ gồm chữ in hoa, số và gạch dưới, không dấu, không khoảng trắng.
+      </p>
+      }
+    </div>
+
+    <div class="flex items-start gap-2 rounded-lg border border-warning/40 bg-warning/10 px-2.5 py-2 text-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="lucide lucide-triangle-alert-icon lucide-triangle-alert mt-0.5 size-4 shrink-0 text-warning">
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+        <path d="M12 9v4" />
+        <path d="M12 17h.01" />
+      </svg>
+      <p class="text-warning">
+        Mã hệ thống không thể thay đổi sau khi hệ thống đã có đơn vị liên thông.
+      </p>
+    </div>
+
+    <div class="space-y-1.5">
+      <label for="sys-desc" class="flex items-center gap-2 text-sm font-medium text-foreground">
+        Mô tả
+      </label>
+      <textarea id="sys-desc" formControlName="description" placeholder="Nhập mô tả..." rows="3"
+        class="min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"></textarea>
+    </div>
+
+    @if (errorMessage()) {
+    <p class="text-sm text-destructive">{{ errorMessage() }}</p>
+    }
+  </form>
+
+  <div footer class="flex items-center justify-end gap-2">
+    <button type="button"
+      class="h-8 rounded-lg px-2.5 text-sm font-medium text-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-50"
+      [disabled]="submitting()" (click)="close()">
+      Huỷ
+    </button>
+    <button type="button"
+      class="h-8 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:pointer-events-none disabled:opacity-50"
+      [disabled]="submitting()" (click)="submit()">
+      {{ submitting() ? 'Đang thêm...' : 'Thêm hệ thống' }}
+    </button>
+  </div>
+</app-modal>

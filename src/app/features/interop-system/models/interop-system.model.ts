@@ -1,18 +1,27 @@
 export type InteropSystemStatus = 'ACTIVE' | 'LOCKED';
 
+export type LocalDateTimeArray = number[];
 export interface InteropSystem {
-  id: string;
+  id: number;
   code: string;
   name: string;
   description: string;
-  unitCount: number;
   status: InteropSystemStatus;
-  createdAt: string;
+  unitCount: number; 
+  createdBy?: number;
+  createdAt: LocalDateTimeArray;
+  updatedAt?: LocalDateTimeArray;
 }
 
 export interface InteropSystemQuery {
-  search: string;
+  name: string;
   status: InteropSystemStatus | 'ALL';
   page: number; // 0-based, khớp convention PageData của BE
   size: number;
+}
+
+export interface CreateInteropSystemPayload {
+  code: string;
+  name: string;
+  description: string;
 }

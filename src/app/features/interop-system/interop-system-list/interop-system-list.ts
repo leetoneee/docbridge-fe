@@ -4,18 +4,31 @@ import { InteropSystemApiService } from '../services/interop-system-api.service'
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ConfirmDialog, ConfirmDialogTone } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogTone,
+} from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header';
 import { TooltipComponent } from '../../../shared/components/tooltip/tooltip';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge';
+import { InteropSystemAdd } from '../interop-system-add/interop-system-add';
+import { LocalDatePipe } from '../../../shared/pipes/local-date-pipe';
 
 type StatusFilter = InteropSystemStatus | 'ALL';
 
 @Component({
   selector: 'app-interop-system-list',
   standalone: true,
-  imports: [PageHeaderComponent, ConfirmDialog, TooltipComponent, EmptyStateComponent, StatusBadgeComponent],
+  imports: [
+    PageHeaderComponent,
+    ConfirmDialog,
+    TooltipComponent,
+    EmptyStateComponent,
+    StatusBadgeComponent,
+    InteropSystemAdd,
+    LocalDatePipe,
+  ],
   templateUrl: './interop-system-list.html',
   styleUrl: './interop-system-list.css',
 })
@@ -45,7 +58,7 @@ export class InteropSystemList {
   pageNumbers = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i));
 
   lockDialogTitle = computed(() =>
-    this.lockTarget()?.status === 'LOCKED' ? 'Mở khoá hệ thống' : 'Khoá hệ thống'
+    this.lockTarget()?.status === 'LOCKED' ? 'Mở khoá hệ thống' : 'Khoá hệ thống',
   );
   lockDialogDescription = computed(() => {
     const t = this.lockTarget();
@@ -54,10 +67,12 @@ export class InteropSystemList {
       ? `Mở khoá hệ thống "${t.name}"? Các đơn vị sẽ có thể thực hiện giao dịch trở lại.`
       : `Khoá hệ thống "${t.name}"? Các đơn vị thuộc hệ thống sẽ không thể thực hiện giao dịch.`;
   });
-  lockDialogConfirmLabel = computed(() => (this.lockTarget()?.status === 'LOCKED' ? 'Mở khoá' : 'Khoá hệ thống'));
+  lockDialogConfirmLabel = computed(() =>
+    this.lockTarget()?.status === 'LOCKED' ? 'Mở khoá' : 'Khoá hệ thống',
+  );
   lockDialogDestructive = computed(() => this.lockTarget()?.status !== 'LOCKED');
   lockDialogTone = computed<ConfirmDialogTone>(() =>
-    this.lockTarget()?.status === 'LOCKED' ? 'primary' : 'warning'
+    this.lockTarget()?.status === 'LOCKED' ? 'primary' : 'warning',
   );
 
   deleteDialogDescription = computed(() => {
@@ -66,6 +81,12 @@ export class InteropSystemList {
   });
 
   private searchInput$ = new Subject<string>();
+
+  private formatDate(iso: string): string {
+    const d = new Date(iso);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+  }
 
   constructor() {
     this.searchInput$
@@ -90,6 +111,8 @@ export class InteropSystemList {
   }
 
   refresh() {
+    this.searchInput$.next('');
+    this.statusFilter.set('ALL');
     this.loadData();
   }
 
@@ -105,7 +128,7 @@ export class InteropSystemList {
 
     this.api
       .getList({
-        search: this.searchTerm(),
+        name: this.searchTerm(),
         status: this.statusFilter(),
         page: this.page(),
         size: this.pageSize(),
@@ -127,7 +150,7 @@ export class InteropSystemList {
       });
   }
 
-  openDetail(id: string) {
+  openDetail(id: number) {
     // TODO: xác nhận đúng path route detail khi có SCR04
     this.router.navigate(['/admin/interop-system', id]);
   }
@@ -135,6 +158,11 @@ export class InteropSystemList {
   openAdd() {
     this.addOpen.set(true);
     // TODO: nối <app-add-interop-system-modal> khi có file riêng từ bạn
+  }
+
+  onCreated(sys: InteropSystem) {
+    this.systems.set([sys, ...this.systems()]);
+    this.totalElements.set(this.totalElements() + 1);
   }
 
   askToggleStatus(sys: InteropSystem) {

@@ -2,7 +2,7 @@ import { InteropSystem } from '../models/interop-system.model';
 
 export const MOCK_INTEROP_SYSTEMS: InteropSystem[] = [
   {
-    id: '1',
+    id: 1,
     code: 'EOFFICE',
     name: 'Hệ thống quản lý văn bản điều hành',
     description: 'Hệ thống văn bản điện tử liên thông giữa các đơn vị hành chính.',
@@ -11,7 +11,7 @@ export const MOCK_INTEROP_SYSTEMS: InteropSystem[] = [
     createdAt: '12/01/2025',
   },
   {
-    id: '2',
+    id: 2,
     code: 'ONEGATE',
     name: 'Cổng dịch vụ công một cửa',
     description: 'Tiếp nhận và xử lý hồ sơ dịch vụ công trực tuyến.',
@@ -20,7 +20,7 @@ export const MOCK_INTEROP_SYSTEMS: InteropSystem[] = [
     createdAt: '03/02/2025',
   },
   {
-    id: '3',
+    id: 3,
     code: 'LGSP',
     name: 'Nền tảng tích hợp chia sẻ dữ liệu',
     description: 'Kết nối, chia sẻ dữ liệu giữa các hệ thống thông tin.',
@@ -29,7 +29,7 @@ export const MOCK_INTEROP_SYSTEMS: InteropSystem[] = [
     createdAt: '20/02/2025',
   },
   {
-    id: '4',
+    id: 4,
     code: 'HRM',
     name: 'Quản lý nhân sự nội bộ',
     description: 'Quản lý hồ sơ, tổ chức cán bộ công chức.',
@@ -38,7 +38,7 @@ export const MOCK_INTEROP_SYSTEMS: InteropSystem[] = [
     createdAt: '15/03/2025',
   },
   {
-    id: '5',
+    id: 5,
     code: 'ARCHIVE',
     name: 'Lưu trữ điện tử',
     description: 'Lưu trữ và tra cứu văn bản, hồ sơ điện tử.',
