@@ -33,27 +33,27 @@ export class AdminSidebar {
     {
       label: 'Tổng quan',
       items: [
-        { label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
+        { label: 'Dashboard', route: '/admin/dashboard', icon: 'dashboard' },
       ],
     },
     {
       label: 'Liên thông',
       items: [
-        { label: 'Hệ thống liên thông', route: '/systems', icon: 'network' },
-        { label: 'Đơn vị liên thông',   route: '/units',   icon: 'building' },
+        { label: 'Hệ thống liên thông', route: '/admin/systems', icon: 'network' },
+        { label: 'Đơn vị liên thông',   route: '/admin/units',   icon: 'building' },
       ],
     },
     {
       label: 'Quản trị',
       items: [
-        { label: 'Tài khoản', route: '/accounts',    icon: 'users' },
-        { label: 'Phân quyền', route: '/permissions', icon: 'shield' },
+        { label: 'Tài khoản', route: '/admin/accounts',    icon: 'users' },
+        { label: 'Phân quyền', route: '/admin/permissions', icon: 'shield' },
       ],
     },
     {
       label: 'Giám sát',
       items: [
-        { label: 'Nhật ký hệ thống', route: '/logs', icon: 'scroll' },
+        { label: 'Nhật ký hệ thống', route: '/admin/logs', icon: 'scroll' },
       ],
     },
   ];

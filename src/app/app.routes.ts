@@ -12,7 +12,7 @@ export const routes: Routes = [
 
   // Admin / Operator shell
   {
-    path: '',
+    path: 'admin',
     loadComponent: () => import('./layouts/admin-layout/admin-layout').then((m) => m.AdminLayout),
     canActivate: [authGuard, firstLoginGuard],
     children: [

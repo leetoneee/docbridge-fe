@@ -71,9 +71,9 @@ export class Login {
   private redirectByRole(): void {
     const role = this.authService.role();
     if (role === 'UNIT') {
-      this.router.navigate(['/portal/outbox']);
+      this.router.navigate(['/unit/portal/outbox']);
     } else {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/admin/dashboard']);
     }
   }
 

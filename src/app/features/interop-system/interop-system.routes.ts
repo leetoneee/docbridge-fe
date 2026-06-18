@@ -6,9 +6,9 @@ export const INTEROP_SYSTEM_ROUTES: Routes = [
     loadComponent: () =>
       import('./interop-system-list/interop-system-list').then((m) => m.InteropSystemList),
   },
-  // {
-  //   path: ':id',
-  //   loadComponent: () =>
-  //     import('./interop-system-detail/interop-system-detail').then((m) => m.InteropSystemDetailComponent),
-  // },
+  {
+    path: ':id',
+    loadComponent: () =>
+      import('./interop-system-detail/interop-system-detail').then((m) => m.InteropSystemDetail),
+  },
 ];

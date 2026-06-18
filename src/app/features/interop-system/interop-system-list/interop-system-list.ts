@@ -152,7 +152,7 @@ export class InteropSystemList {
 
   openDetail(id: number) {
     // TODO: xác nhận đúng path route detail khi có SCR04
-    this.router.navigate(['/admin/system', id]);
+    this.router.navigate(['/admin/systems', id]);
   }
 
   openAdd() {

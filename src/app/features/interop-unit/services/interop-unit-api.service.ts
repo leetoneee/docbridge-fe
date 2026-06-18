@@ -1,14 +1,14 @@
-import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../../environments/environment';
-import { InteropUnit, InteropUnitQuery } from '../models/interop-unit.model';
-import { ApiResponse, PageData } from '../../../shared/models/api-response.model';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ApiResponse, PageData } from '../../../shared/models/api-response.model';
+import { InteropUnit, InteropUnitQuery } from '../models/interop-unit.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
-export class InteropSystemApiService {
+export class InteropUnitApiService {
   private http = inject(HttpClient);
 
   getList(query: InteropUnitQuery): Observable<ApiResponse<PageData<InteropUnit>>> {
