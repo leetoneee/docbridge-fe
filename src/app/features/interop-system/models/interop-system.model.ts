@@ -25,3 +25,8 @@ export interface CreateInteropSystemPayload {
   name: string;
   description: string;
 }
+
+export interface UpdateInteropSystemPayload {
+  name: string;
+  description: string;
+}

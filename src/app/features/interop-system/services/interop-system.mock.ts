@@ -8,7 +8,7 @@ export const MOCK_INTEROP_SYSTEMS: InteropSystem[] = [
     description: 'Hệ thống văn bản điện tử liên thông giữa các đơn vị hành chính.',
     unitCount: 12,
     status: 'ACTIVE',
-    createdAt: '12/01/2025',
+    createdAt: [2026, 6, 18, 9, 21, 23],
   },
   {
     id: 2,
@@ -17,7 +17,7 @@ export const MOCK_INTEROP_SYSTEMS: InteropSystem[] = [
     description: 'Tiếp nhận và xử lý hồ sơ dịch vụ công trực tuyến.',
     unitCount: 8,
     status: 'ACTIVE',
-    createdAt: '03/02/2025',
+    createdAt: [2026, 6, 18, 9, 21, 23],
   },
   {
     id: 3,
@@ -26,7 +26,7 @@ export const MOCK_INTEROP_SYSTEMS: InteropSystem[] = [
     description: 'Kết nối, chia sẻ dữ liệu giữa các hệ thống thông tin.',
     unitCount: 0,
     status: 'LOCKED',
-    createdAt: '20/02/2025',
+    createdAt: [2026, 6, 18, 9, 21, 23],
   },
   {
     id: 4,
@@ -35,7 +35,7 @@ export const MOCK_INTEROP_SYSTEMS: InteropSystem[] = [
     description: 'Quản lý hồ sơ, tổ chức cán bộ công chức.',
     unitCount: 5,
     status: 'ACTIVE',
-    createdAt: '15/03/2025',
+    createdAt: [2026, 6, 18, 9, 21, 23],
   },
   {
     id: 5,
@@ -44,6 +44,6 @@ export const MOCK_INTEROP_SYSTEMS: InteropSystem[] = [
     description: 'Lưu trữ và tra cứu văn bản, hồ sơ điện tử.',
     unitCount: 3,
     status: 'LOCKED',
-    createdAt: '01/04/2025',
+    createdAt: [2026, 6, 18, 9, 21, 23],
   },
 ];

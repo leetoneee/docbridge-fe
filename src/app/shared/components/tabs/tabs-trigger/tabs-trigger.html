@@ -1,0 +1,9 @@
+<button type="button"
+  class="inline-flex h-6.5 flex-1 items-center justify-center gap-1.5 rounded-md px-2.5 text-sm font-medium transition-all"
+  [class]="
+    active()
+      ? 'bg-surface text-foreground shadow-[0_1px_2px_rgba(0,0,0,0.06)]'
+      : 'text-text-secondary hover:text-foreground'
+  " (click)="select()">
+  <ng-content></ng-content>
+</button>

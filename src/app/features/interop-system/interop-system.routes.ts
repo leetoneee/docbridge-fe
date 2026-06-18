@@ -6,5 +6,9 @@ export const INTEROP_SYSTEM_ROUTES: Routes = [
     loadComponent: () =>
       import('./interop-system-list/interop-system-list').then((m) => m.InteropSystemList),
   },
-  // TODO: route detail (SCR04) và quản lý đơn vị thuộc hệ thống (SCR05) khi có code v0
+  // {
+  //   path: ':id',
+  //   loadComponent: () =>
+  //     import('./interop-system-detail/interop-system-detail').then((m) => m.InteropSystemDetailComponent),
+  // },
 ];
