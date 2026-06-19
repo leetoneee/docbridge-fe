@@ -1,0 +1,117 @@
+<app-modal [open]="open()" title="Thêm đơn vị liên thông" (openChange)="close()">
+  <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="lucide lucide-building2-icon lucide-building-2 size-5 text-primary">
+    <path d="M10 12h4" />
+    <path d="M10 8h4" />
+    <path d="M14 21v-3a2 2 0 0 0-4 0v3" />
+    <path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" />
+    <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" />
+  </svg>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col space-y-4">
+    <div class="flex flex-col space-y-1.5">
+      <label class="flex items-center gap-2 text-sm font-medium text-foreground">
+        Hệ thống liên thông <span class="text-destructive">*</span>
+      </label>
+      <select formControlName="systemId"
+        class="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50">
+        <option [ngValue]="null" disabled>Chọn hệ thống...</option>
+        @for (sys of systemOptions(); track sys.id) {
+        <option [ngValue]="sys.id">{{ sys.code }} — {{ sys.name }}</option>
+        }
+      </select>
+      @if (form.controls.systemId.touched && form.controls.systemId.invalid) {
+      <p class="text-xs text-destructive">Vui lòng chọn hệ thống liên thông.</p>
+      }
+    </div>
+
+    <div class="flex flex-col space-y-1.5">
+      <label for="unit-name" class="flex items-center gap-2 text-sm font-medium text-foreground">
+        Tên đơn vị <span class="text-destructive">*</span>
+      </label>
+      <input id="unit-name" type="text" formControlName="name" placeholder="Nhập tên đơn vị..."
+        class="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+      <p class="text-xs text-destructive">Tên đơn vị là bắt buộc.</p>
+      }
+    </div>
+
+    <div class="flex flex-col space-y-1.5">
+      <label for="unit-email" class="flex items-center gap-2 text-sm font-medium text-foreground">
+        Email đơn vị <span class="text-destructive">*</span>
+      </label>
+      <input id="unit-email" type="email" formControlName="email" placeholder="email@example.com"
+        class="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+      <p class="text-xs text-text-muted">Email này sẽ được dùng làm username cho tài khoản Unit đại diện.</p>
+      @if (form.controls.email.touched && form.controls.email.errors?.['required']) {
+      <p class="text-xs text-destructive">Email là bắt buộc.</p>
+      } @else if (form.controls.email.touched && form.controls.email.errors?.['email']) {
+      <p class="text-xs text-destructive">Email không đúng định dạng.</p>
+      }
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col space-y-1.5">
+        <label for="unit-rep-name" class="flex items-center gap-2 text-sm font-medium text-foreground">
+          Người đại diện <span class="text-destructive">*</span>
+        </label>
+        <input id="unit-rep-name" type="text" formControlName="representativeName"
+          placeholder="Nhập tên người đại diện..."
+          class="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+        @if (form.controls.representativeName.touched && form.controls.representativeName.invalid) {
+        <p class="text-xs text-destructive">Người đại diện là bắt buộc.</p>
+        }
+      </div>
+
+      <div class="flex flex-col space-y-1.5">
+        <label for="unit-rep-phone" class="flex items-center gap-2 text-sm font-medium text-foreground">
+          SĐT người đại diện <span class="text-destructive">*</span>
+        </label>
+        <input id="unit-rep-phone" type="tel" formControlName="representativePhone" placeholder="09xxxxxxxx"
+          class="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+        @if (form.controls.representativePhone.touched && form.controls.representativePhone.errors?.['required']) {
+        <p class="text-xs text-destructive">Số điện thoại là bắt buộc.</p>
+        } @else if (form.controls.representativePhone.touched && form.controls.representativePhone.errors?.['pattern'])
+        {
+        <p class="text-xs text-destructive">Số điện thoại không hợp lệ.</p>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-1.5">
+      <label for="unit-desc" class="flex items-center gap-2 text-sm font-medium text-foreground">Mô tả</label>
+      <textarea id="unit-desc" formControlName="description" placeholder="Nhập mô tả..." rows="3"
+        class="min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"></textarea>
+    </div>
+
+    <div class="flex items-start gap-2 rounded-lg border border-primary/30 bg-primary/5 px-2.5 py-2 text-sm">
+      <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="lucide lucide-info-icon lucide-info mt-0.5 size-4 shrink-0 text-primary">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 16v-4" />
+        <path d="M12 8h.01" />
+      </svg>
+      <p class="text-foreground">
+        Sau khi thêm, đơn vị sẽ ở trạng thái PENDING và cần được Admin phê duyệt.
+      </p>
+    </div>
+
+    @if (errorMessage()) {
+    <p class="text-sm text-destructive">{{ errorMessage() }}</p>
+    }
+  </form>
+
+  <div footer class="flex items-center justify-end gap-2">
+    <button type="button"
+      class="h-8 rounded-lg px-2.5 text-sm font-medium text-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-50"
+      [disabled]="submitting()" (click)="close()">
+      Huỷ
+    </button>
+    <button type="button"
+      class="h-8 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:pointer-events-none disabled:opacity-50"
+      [disabled]="submitting()" (click)="submit()">
+      {{ submitting() ? 'Đang thêm...' : 'Thêm đơn vị' }}
+    </button>
+  </div>
+</app-modal>

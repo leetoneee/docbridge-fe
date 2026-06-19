@@ -2,7 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse, PageData } from '../../../shared/models/api-response.model';
-import { InteropUnit, InteropUnitQuery } from '../models/interop-unit.model';
+import {
+  CreateInteropUnitPayload,
+  InteropUnit,
+  InteropUnitQuery,
+} from '../models/interop-unit.model';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -10,6 +14,10 @@ import { environment } from '../../../../environments/environment';
 })
 export class InteropUnitApiService {
   private http = inject(HttpClient);
+
+  create(payload: CreateInteropUnitPayload): Observable<ApiResponse<InteropUnit>> {
+    return this.http.post<ApiResponse<InteropUnit>>(`${environment.apiUrl}/api/units`, payload);
+  }
 
   getList(query: InteropUnitQuery): Observable<ApiResponse<PageData<InteropUnit>>> {
     const params: Record<string, string> = {
@@ -44,5 +52,4 @@ export class InteropUnitApiService {
   remove(id: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${environment.apiUrl}/api/units/${id}`);
   }
-  
 }

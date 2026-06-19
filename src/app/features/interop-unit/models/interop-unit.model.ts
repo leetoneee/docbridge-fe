@@ -25,3 +25,12 @@ export interface InteropUnitQuery {
   page: number;
   size: number;
 }
+
+export interface CreateInteropUnitPayload {
+  systemId: number;
+  name: string;
+  description: string;
+  representativeName: string;
+  representativePhone: string;
+  email: string;
+}

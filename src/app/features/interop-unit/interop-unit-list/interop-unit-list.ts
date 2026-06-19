@@ -2,7 +2,10 @@ import { NgClass } from '@angular/common';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state';
-import { ConfirmDialog, ConfirmDialogTone } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogTone,
+} from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { TooltipComponent } from '../../../shared/components/tooltip/tooltip';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge';
 import { LocalDatePipe } from '../../../shared/pipes/local-date-pipe';
@@ -13,6 +16,7 @@ import { InteropUnit, InteropUnitStatus } from '../models/interop-unit.model';
 import { InteropSystemSummary } from '../../interop-system/models/interop-system.model';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { InteropUnitAdd } from '../interop-unit-add/interop-unit-add';
 
 type StatusFilter = InteropUnitStatus | 'ALL';
 type SystemFilter = number | 'ALL';
@@ -22,6 +26,7 @@ type SystemFilter = number | 'ALL';
   standalone: true,
   imports: [
     NgClass,
+    InteropUnitAdd,
     PageHeaderComponent,
     EmptyStateComponent,
     ConfirmDialog,
@@ -60,6 +65,7 @@ export class InteropUnitList {
   rangeStart = computed(() => (this.totalElements() === 0 ? 0 : this.page() * this.pageSize() + 1));
   rangeEnd = computed(() => Math.min((this.page() + 1) * this.pageSize(), this.totalElements()));
   pageNumbers = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i));
+  activeSystemOptions = computed(() => this.systemOptions().filter((s) => s.status === 'ACTIVE'));
 
   lockDialogTitle = computed(() =>
     this.lockTarget()?.status === 'LOCKED' ? 'Mở khoá đơn vị' : 'Khoá đơn vị',
@@ -111,6 +117,11 @@ export class InteropUnitList {
           // không chặn trang nếu lấy danh sách hệ thống lỗi - dropdown chỉ còn "Tất cả hệ thống"
         },
       });
+  }
+
+  onCreated(unit: InteropUnit) {
+    this.units.set([unit, ...this.units()]);
+    this.totalElements.set(this.totalElements() + 1);
   }
 
   onSearchInput(event: Event) {
