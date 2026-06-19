@@ -1,4 +1,4 @@
-import { Component, HostListener, input, output } from '@angular/core';
+import { Component, effect, HostListener, input, output, signal } from '@angular/core';
 
 export type ConfirmDialogTone = 'destructive' | 'warning' | 'primary';
 
@@ -18,9 +18,24 @@ export class ConfirmDialog {
   destructive = input<boolean>(true);
   iconTone = input<ConfirmDialogTone>('destructive');
   loading = input<boolean>(false);
+  requireReason = input<boolean>(false);
+  reasonLabel = input<string>('Lý do');
+  reasonPlaceholder = input<string>('Nhập lý do...');
 
   openChange = output<boolean>();
-  confirm = output<void>();
+  confirm = output<string | undefined>();
+
+  reason = signal('');
+
+  constructor() {
+    // reset lý do mỗi lần dialog mở lại
+    effect(
+      () => {
+        if (this.open()) this.reason.set('');
+      },
+      { allowSignalWrites: true },
+    );
+  }
 
   @HostListener('document:keydown.escape')
   onEscape() {
@@ -32,7 +47,11 @@ export class ConfirmDialog {
     this.openChange.emit(false);
   }
 
+  onReasonInput(event: Event) {
+    this.reason.set((event.target as HTMLTextAreaElement).value);
+  }
   onConfirm() {
-    this.confirm.emit();
+    if (this.requireReason() && this.reason().trim().length === 0) return;
+    this.confirm.emit(this.requireReason() ? this.reason().trim() : undefined);
   }
 }

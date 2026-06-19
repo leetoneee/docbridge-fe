@@ -3,9 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse, PageData } from '../../../shared/models/api-response.model';
 import {
+  ApproveInteropUnitResult,
+  ChangeUnitEmailPayload,
   CreateInteropUnitPayload,
   InteropUnit,
+  InteropUnitDetailInfo as InteropUnitDetail,
   InteropUnitQuery,
+  RejectInteropUnitPayload,
+  UpdateInteropUnitPayload,
 } from '../models/interop-unit.model';
 import { environment } from '../../../../environments/environment';
 
@@ -42,6 +47,25 @@ export class InteropUnitApiService {
     });
   }
 
+  getById(id: number): Observable<ApiResponse<InteropUnitDetail>> {
+    return this.http.get<ApiResponse<InteropUnitDetail>>(`${environment.apiUrl}/api/units/${id}`);
+  }
+
+  update(id: number, payload: UpdateInteropUnitPayload): Observable<ApiResponse<InteropUnit>> {
+    return this.http.put<ApiResponse<InteropUnit>>(
+      `${environment.apiUrl}/api/units/${id}`,
+      payload,
+    );
+  }
+
+  /** (Admin only, tách riêng khỏi update() thông thường) */
+  changeEmail(id: number, payload: ChangeUnitEmailPayload): Observable<ApiResponse<InteropUnit>> {
+    return this.http.patch<ApiResponse<InteropUnit>>(
+      `${environment.apiUrl}/api/units/${id}/email`,
+      payload,
+    );
+  }
+
   toggleLock(id: number): Observable<ApiResponse<void>> {
     return this.http.post<ApiResponse<void>>(
       `${environment.apiUrl}/api/units/${id}/toggle-lock`,
@@ -51,5 +75,19 @@ export class InteropUnitApiService {
 
   remove(id: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${environment.apiUrl}/api/units/${id}`);
+  }
+
+  approve(id: number): Observable<ApiResponse<ApproveInteropUnitResult>> {
+    return this.http.post<ApiResponse<ApproveInteropUnitResult>>(
+      `${environment.apiUrl}/api/units/${id}/approve`,
+      {},
+    );
+  }
+
+  reject(id: number, payload: RejectInteropUnitPayload): Observable<ApiResponse<string>> {
+    return this.http.post<ApiResponse<string>>(
+      `${environment.apiUrl}/api/units/${id}/reject`,
+      payload,
+    );
   }
 }

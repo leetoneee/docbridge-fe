@@ -6,5 +6,9 @@ export const INTEROP_UNIT_ROUTES: Routes = [
     loadComponent: () =>
       import('./interop-unit-list/interop-unit-list').then((m) => m.InteropUnitList),
   },
-  // TODO: route ':id' khi có code v0 cho interop-unit-detail
+  {
+    path: ':id',
+    loadComponent: () =>
+      import('./interop-unit-detail/interop-unit-detail').then((m) => m.InteropUnitDetail),
+  },
 ];

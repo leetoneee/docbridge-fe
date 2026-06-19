@@ -1,0 +1,99 @@
+<app-modal [open]="open()" title="Phê duyệt đơn vị liên thông" (openChange)="close()">
+  <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="lucide lucide-circle-check-icon lucide-circle-check size-5 text-success">
+    <circle cx="12" cy="12" r="10" />
+    <path d="m9 12 2 2 4-4" />
+  </svg>
+  @if (phase() === 'confirm') {
+  <div class="flex flex-col space-y-4">
+    <div class="rounded-lg border border-border bg-muted/40 p-3">
+      <dl class="grid gap-2 text-sm">
+        <div class="flex justify-between gap-4">
+          <dt class="text-text-secondary">Tên đơn vị</dt>
+          <dd class="font-medium text-foreground">{{ unitName() }}</dd>
+        </div>
+        <div class="flex justify-between gap-4">
+          <dt class="text-text-secondary">Hệ thống thuộc về</dt>
+          <dd class="font-mono text-foreground">{{ systemName() }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="flex items-start gap-2 rounded-lg border border-success/30 bg-success/5 px-2.5 py-2 text-sm">
+      <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="lucide lucide-circle-check-icon lucide-circle-check mt-0.5 size-4 shrink-0 text-success">
+        <circle cx="12" cy="12" r="10" />
+        <path d="m9 12 2 2 4-4" />
+      </svg>
+      <p class="text-foreground">
+        Sau khi phê duyệt, hệ thống sẽ tự động cấp mã liên thông, tạo tài khoản Unit và sinh mật khẩu tạm thời.
+      </p>
+    </div>
+
+    @if (errorMessage()) {
+    <p class="text-sm text-destructive">{{ errorMessage() }}</p>
+    }
+  </div>
+  } @else {
+  <div class="flex flex-col space-y-4">
+    <div class="rounded-lg border border-border bg-muted/40 p-3">
+      <dl class="grid gap-2 text-sm">
+        <div class="flex justify-between gap-4">
+          <dt class="text-text-secondary">Mã liên thông đã cấp</dt>
+          <dd class="font-mono text-foreground">{{ result()?.interopCode }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="flex flex-col space-y-1.5">
+      <p class="text-[13px] font-medium text-foreground">Mật khẩu tạm thời</p>
+      <div class="flex items-center justify-between gap-2 rounded-lg border border-border bg-surface px-3 py-2">
+        <code class="font-mono text-sm text-foreground">{{ result()?.tempPassword }}</code>
+        <button type="button"
+          class="inline-flex h-7 items-center gap-1.5 rounded-md border border-border px-2 text-xs font-medium hover:bg-muted"
+          (click)="copyPassword()">
+          @if (copied()) {
+          <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-check-icon lucide-check size-3.5">
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+          } @else {
+          <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-copy-icon lucide-copy size-3.5">
+            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+          </svg>
+          }
+          {{ copied() ? 'Đã sao chép' : 'Sao chép' }}
+        </button>
+      </div>
+      <p class="text-xs text-warning">Mật khẩu chỉ hiển thị một lần. Vui lòng sao chép và gửi cho đơn vị.</p>
+    </div>
+  </div>
+  }
+
+  <div footer class="flex items-center justify-end gap-2">
+    @if (phase() === 'confirm') {
+    <button type="button"
+      class="h-8 rounded-lg px-2.5 text-sm font-medium text-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-50"
+      [disabled]="submitting()" (click)="close()">
+      Huỷ
+    </button>
+    <button type="button"
+      class="h-8 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:pointer-events-none disabled:opacity-50"
+      [disabled]="submitting()" (click)="confirmApprove()">
+      {{ submitting() ? 'Đang xử lý...' : 'Xác nhận phê duyệt' }}
+    </button>
+    } @else {
+    <button type="button"
+      class="h-8 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
+      (click)="closeAfterResult()">
+      Đóng
+    </button>
+    }
+  </div>
+</app-modal>

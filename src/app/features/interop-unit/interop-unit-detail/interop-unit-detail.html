@@ -1,0 +1,365 @@
+@if (loading()) {
+<div class="flex flex-col space-y-4">
+  <div class="h-8 w-64 animate-pulse rounded-md bg-muted"></div>
+  <div class="h-48 animate-pulse rounded-[10px] bg-muted"></div>
+</div>
+} @else if (loadError()) {
+<div class="rounded-[10px] border border-border bg-surface p-6 text-center text-sm text-destructive">
+  {{ loadError() }}
+</div>
+} @else if (unit(); as u) {
+<div class="flex flex-col space-y-4">
+  <app-page-header [title]="u.name">
+    <app-status-badge badge [status]="u.status"></app-status-badge>
+  </app-page-header>
+
+  <div class="grid grid-cols-1 gap-4 lg:grid-cols-10">
+    <div class="flex flex-col space-y-4 lg:col-span-7">
+      <app-tabs defaultValue="info">
+        <app-tabs-list>
+          <app-tabs-trigger value="info">Thông tin</app-tabs-trigger>
+          <app-tabs-trigger value="account">Tài khoản đại diện</app-tabs-trigger>
+        </app-tabs-list>
+
+        <app-tabs-content value="info">
+          <div class="flex flex-col space-y-4 pt-2">
+            @if (u.status === 'REJECTED') {
+            <div class="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5">
+              <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-circle-x-icon lucide-circle-x mt-0.5 size-4 shrink-0 text-destructive">
+                <circle cx="12" cy="12" r="10" />
+                <path d="m15 9-6 6" />
+                <path d="m9 9 6 6" />
+              </svg>
+              <div>
+                <p class="text-sm font-medium text-destructive">Đơn vị đã bị từ chối</p>
+                <p class="text-sm text-destructive/90">{{ u.rejectedReason || 'Không có lý do cụ thể.' }}</p>
+              </div>
+            </div>
+            }
+
+            <app-info-card title="Thông tin đơn vị">
+              <app-info-grid>
+                <app-info-row label="Mã liên thông">
+                  <span class="font-mono">{{ u.interopCode || 'Chưa cấp' }}</span>
+                </app-info-row>
+                <app-info-row label="Tên đơn vị">{{ u.name }}</app-info-row>
+                <app-info-row label="Hệ thống liên thông">
+                  <span class="font-mono">{{ u.system.code }}</span>
+                </app-info-row>
+                <app-info-row label="Email">{{ u.email }}</app-info-row>
+                <app-info-row label="Người đại diện">{{ u.representativeName }}</app-info-row>
+                <app-info-row label="SĐT người đại diện">{{ u.representativePhone }}</app-info-row>
+                <app-info-row label="Trạng thái">
+                  <app-status-badge [status]="u.status"></app-status-badge>
+                </app-info-row>
+                <app-info-row label="Ngày tạo">{{ u.createdAt | localDate }}</app-info-row>
+                @if (u.approvedBy) {
+                <app-info-row label="Người phê duyệt">{{ u.approvedBy }}</app-info-row>
+                <app-info-row label="Ngày phê duyệt">{{ u.approvedAt | localDate }}</app-info-row>
+                }
+              </app-info-grid>
+            </app-info-card>
+
+            @if (hasAccount()) {
+            <app-info-card title="Chỉnh sửa thông tin">
+              <form [formGroup]="editForm" (ngSubmit)="saveEdit()" class="grid max-w-2xl gap-4">
+                <div class="flex flex-col space-y-1.5">
+                  <label for="u-name" class="text-sm font-medium text-foreground">Tên đơn vị</label>
+                  <input id="u-name" type="text" formControlName="name"
+                    class="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+                  @if (editForm.controls.name.touched && editForm.controls.name.invalid) {
+                  <p class="text-xs text-destructive">Tên đơn vị là bắt buộc.</p>
+                  }
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="flex flex-col space-y-1.5">
+                    <label for="u-rep-name" class="text-sm font-medium text-foreground">Người đại diện</label>
+                    <input id="u-rep-name" type="text" formControlName="representativeName"
+                      class="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+                    @if (editForm.controls.representativeName.touched && editForm.controls.representativeName.invalid) {
+                    <p class="text-xs text-destructive">Người đại diện là bắt buộc.</p>
+                    }
+                  </div>
+                  <div class="flex flex-col space-y-1.5">
+                    <label for="u-rep-phone" class="text-sm font-medium text-foreground">SĐT người đại diện</label>
+                    <input id="u-rep-phone" type="tel" formControlName="representativePhone"
+                      class="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+                    @if (editForm.controls.representativePhone.touched && editForm.controls.representativePhone.invalid)
+                    {
+                    <p class="text-xs text-destructive">Số điện thoại không hợp lệ.</p>
+                    }
+                  </div>
+                </div>
+
+                <div class="flex flex-col space-y-1.5">
+                  <label for="u-desc" class="text-sm font-medium text-foreground">Mô tả</label>
+                  <textarea id="u-desc" formControlName="description" rows="3" placeholder="Nhập mô tả..."
+                    class="min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"></textarea>
+                </div>
+
+                @if (saveError()) {
+                <p class="text-sm text-destructive">{{ saveError() }}</p>
+                }
+
+                <div class="flex items-center gap-2">
+                  <button type="submit"
+                    class="h-8 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:pointer-events-none disabled:opacity-50"
+                    [disabled]="saving()">
+                    {{ saving() ? 'Đang lưu...' : 'Lưu thay đổi' }}
+                  </button>
+                  <button type="button"
+                    class="h-8 rounded-lg px-2.5 text-sm font-medium text-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-50"
+                    [disabled]="saving()" (click)="cancelEdit()">
+                    Huỷ
+                  </button>
+                </div>
+              </form>
+            </app-info-card>
+            }
+          </div>
+        </app-tabs-content>
+
+        <app-tabs-content value="account">
+          <div class="pt-2">
+            <app-info-card>
+              @if (hasAccount() && u.unitAccount; as account) {
+              <div class="flex flex-col space-y-4">
+                <app-info-grid>
+                  <app-info-row label="Email">{{ account.email }}</app-info-row>
+                  <app-info-row label="Trạng thái tài khoản">
+                    <app-status-badge [status]="account.status"></app-status-badge>
+                  </app-info-row>
+                  <app-info-row label="Lần đăng nhập gần nhất">
+                    {{ account.lastLoginAt ? (account.lastLoginAt | localDate: 'dd/MM/yyyy HH:mm') : 'Chưa đăng nhập' }}
+                  </app-info-row>
+                  <app-info-row label="Ngày tạo">{{ u.approvedAt | localDate }}</app-info-row>
+                </app-info-grid>
+
+                <div class="flex flex-wrap items-center gap-2">
+                  <button type="button"
+                    class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border px-2.5 text-sm font-medium text-foreground hover:bg-muted"
+                    (click)="resetPasswordOpen.set(true)">
+                    <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      class="lucide lucide-key-round-icon lucide-key-round size-4">
+                      <path
+                        d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" />
+                      <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" />
+                    </svg>
+                    Reset mật khẩu
+                  </button>
+
+                  <button type="button"
+                    class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border px-2.5 text-sm font-medium text-foreground hover:bg-muted"
+                    (click)="askToggleAccountLock()">
+                    @if (accountIsLocked()) {
+                    <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      class="lucide lucide-lock-open-icon lucide-lock-open size-4">
+                      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                    </svg>
+                    }@else {
+                    <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      class="lucide lucide-lock-icon lucide-lock size-4">
+                      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    }
+                    {{ accountIsLocked() ? 'Mở khoá tài khoản' : 'Khoá tài khoản' }}
+                  </button>
+                </div>
+              </div>
+              } @else {
+              <app-empty-state title="Chưa có tài khoản đại diện"
+                subtitle="Tài khoản sẽ được tạo tự động sau khi đơn vị được phê duyệt.">
+                <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="lucide lucide-user-x-icon lucide-user-x size-6">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <line x1="17" x2="22" y1="8" y2="13" />
+                  <line x1="22" x2="17" y1="8" y2="13" />
+                </svg>
+              </app-empty-state>
+              }
+            </app-info-card>
+          </div>
+        </app-tabs-content>
+      </app-tabs>
+    </div>
+
+    <div class="lg:col-span-3">
+      <div class="sticky top-20">
+        <app-info-card title="Thao tác">
+          <div class="flex flex-col gap-2">
+            @if (actionError()) {
+            <p class="text-xs text-destructive">{{ actionError() }}</p>
+            }
+
+            @if (u.status === 'PENDING') {
+            <button type="button"
+              class="h-8 w-full rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
+              (click)="approveOpen.set(true)">
+              Phê duyệt
+            </button>
+            <button type="button"
+              class="h-8 w-full rounded-lg border border-destructive/40 px-2.5 text-sm font-medium text-destructive hover:bg-destructive/10"
+              (click)="rejectOpen.set(true)">
+              Từ chối
+            </button>
+            <p class="text-xs text-text-secondary">Đơn vị đang chờ phê duyệt từ Admin.</p>
+            }
+
+            @if (u.status === 'ACTIVE') {
+            <button type="button"
+              class="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-destructive/40 px-2.5 text-sm font-medium text-destructive hover:bg-destructive/10"
+              (click)="askToggleLock()">
+              <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-lock-icon lucide-lock size-4">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              Khoá đơn vị
+            </button>
+            <button type="button"
+              class="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg bg-destructive/10 px-2.5 text-sm font-medium text-destructive hover:bg-destructive/20"
+              (click)="askDelete()">
+              <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-trash2-icon lucide-trash-2 size-4">
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                <path d="M3 6h18" />
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+              Xoá đơn vị
+            </button>
+            <p class="text-xs text-text-secondary">Khoá sẽ ngăn đơn vị thực hiện giao dịch.</p>
+            }
+
+            @if (u.status === 'LOCKED') {
+            <button type="button"
+              class="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-primary/40 px-2.5 text-sm font-medium text-primary hover:bg-primary/10"
+              (click)="askToggleLock()">
+              <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-lock-open-icon lucide-lock-open size-4">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+              </svg>
+              Mở khoá đơn vị
+            </button>
+            <button type="button"
+              class="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg bg-destructive/10 px-2.5 text-sm font-medium text-destructive hover:bg-destructive/20"
+              (click)="askDelete()">
+              <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-trash2-icon lucide-trash-2 size-4">
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                <path d="M3 6h18" />
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+              Xoá đơn vị
+            </button>
+            <p class="text-xs text-warning">Đơn vị đang bị khoá. Không thể thực hiện giao dịch.</p>
+            }
+
+            @if (u.status === 'REJECTED') {
+            <button type="button"
+              class="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg bg-destructive/10 px-2.5 text-sm font-medium text-destructive hover:bg-destructive/20"
+              (click)="askDelete()">
+              <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-trash2-icon lucide-trash-2 size-4">
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                <path d="M3 6h18" />
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+              Xoá đơn vị
+            </button>
+            <p class="text-xs text-destructive">Đơn vị đã bị từ chối.</p>
+            }
+          </div>
+        </app-info-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-approve-unit-modal [open]="approveOpen()" [unitId]="u.id" [unitName]="u.name" [systemName]="u.system.code"
+  (openChange)="onApproveModalOpenChange($event)"></app-approve-unit-modal>
+
+<app-reject-unit-modal [open]="rejectOpen()" [unitId]="u.id" (openChange)="rejectOpen.set($event)"
+  (rejected)="onRejected()"></app-reject-unit-modal>
+
+@if (u.unitAccount; as account) {
+<app-reset-password-modal [open]="resetPasswordOpen()" [accountId]="account.accountId"
+  (openChange)="resetPasswordOpen.set($event)"></app-reset-password-modal>
+}
+
+<app-confirm-dialog [open]="lockTarget()" [title]="lockDialogTitle()" [description]="lockDialogDescription()"
+  [confirmLabel]="lockDialogConfirmLabel()" [destructive]="lockDialogDestructive()" [iconTone]="lockDialogTone()"
+  [loading]="actionLoading()" (openChange)="lockTarget.set(false)" (confirm)="confirmToggleLock()">
+  @if (u.status === 'LOCKED') {
+  <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="lucide lucide-lock-open-icon lucide-lock-open size-5">
+    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+  </svg>
+  }@else {
+  <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="lucide lucide-lock-icon lucide-lock size-5">
+    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
+  }
+</app-confirm-dialog>
+
+<app-confirm-dialog [open]="deleteTarget()" title="Xoá đơn vị liên thông" [description]="deleteDialogDescription()"
+  confirmLabel="Xoá đơn vị" [loading]="actionLoading()" (openChange)="deleteTarget.set(false)"
+  (confirm)="confirmDelete()">
+  <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="lucide lucide-trash2-icon lucide-trash-2 size-5">
+    <path d="M10 11v6" />
+    <path d="M14 11v6" />
+    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+    <path d="M3 6h18" />
+    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+  </svg>
+</app-confirm-dialog>
+
+<app-confirm-dialog [open]="accountLockTarget()" [title]="accountLockDialogTitle()"
+  [description]="accountLockDialogDescription()" [confirmLabel]="accountLockDialogConfirmLabel()"
+  [destructive]="accountLockDialogDestructive()" [iconTone]="accountLockDialogTone()" [loading]="actionLoading()"
+  (openChange)="accountLockTarget.set(false)" (confirm)="confirmToggleAccountLock()">
+  @if (accountIsLocked()) {
+  <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="lucide lucide-lock-open-icon lucide-lock-open size-5">
+    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+  </svg>
+  }@else {
+  <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="lucide lucide-lock-icon lucide-lock size-5">
+    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
+  }
+</app-confirm-dialog>
+}
