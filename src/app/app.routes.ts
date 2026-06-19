@@ -29,19 +29,20 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ADMIN', 'OPERATOR'] },
         loadChildren: () =>
-          import('./features/interop-system/interop-system.routes')
-            .then(m => m.INTEROP_SYSTEM_ROUTES),
+          import('./features/interop-system/interop-system.routes').then(
+            (m) => m.INTEROP_SYSTEM_ROUTES,
+          ),
+      },
+      {
+        path: 'units',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'OPERATOR'] },
+        loadChildren: () =>
+          import('./features/interop-unit/interop-unit.routes').then((m) => m.INTEROP_UNIT_ROUTES),
       },
     ],
   },
-  //     {
-  //       path: 'units',
-  //       canActivate: [roleGuard],
-  //       data: { roles: ['ADMIN', 'OPERATOR'] },
-  //       loadChildren: () =>
-  //         import('./features/interop-unit/interop-unit.routes')
-  //           .then(m => m.INTEROP_UNIT_ROUTES),
-  //     },
+
   //     {
   //       path: 'accounts',
   //       canActivate: [roleGuard],

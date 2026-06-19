@@ -33,4 +33,16 @@ export class InteropUnitApiService {
       params,
     });
   }
+
+  toggleLock(id: number): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(
+      `${environment.apiUrl}/api/units/${id}/toggle-lock`,
+      {},
+    );
+  }
+
+  remove(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${environment.apiUrl}/api/units/${id}`);
+  }
+  
 }

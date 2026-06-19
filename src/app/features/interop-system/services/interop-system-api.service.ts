@@ -6,6 +6,7 @@ import {
   CreateInteropSystemPayload,
   InteropSystem,
   InteropSystemQuery,
+  InteropSystemSummary,
   UpdateInteropSystemPayload,
 } from '../models/interop-system.model';
 import { HttpClient } from '@angular/common/http';
@@ -27,6 +28,13 @@ export class InteropSystemApiService {
     return this.http.get<ApiResponse<PageData<InteropSystem>>>(
       `${environment.apiUrl}/api/interop-systems`,
       { params },
+    );
+  }
+
+  // danh sách rút gọn, không phân trang, dùng cho dropdown
+  getAllSummary(): Observable<ApiResponse<InteropSystemSummary[]>> {
+    return this.http.get<ApiResponse<InteropSystemSummary[]>>(
+      `${environment.apiUrl}/api/interop-systems/all`,
     );
   }
 

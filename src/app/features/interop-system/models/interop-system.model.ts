@@ -30,3 +30,10 @@ export interface UpdateInteropSystemPayload {
   name: string;
   description: string;
 }
+
+export interface InteropSystemSummary {
+  id: number;
+  code: string;
+  name: string;
+  status: InteropSystemStatus;
+}
