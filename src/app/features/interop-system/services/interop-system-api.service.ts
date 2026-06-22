@@ -17,6 +17,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class InteropSystemApiService {
   private http = inject(HttpClient);
+  baseUrl = `${environment.apiUrl}/api/v1`;
 
   getList(query: InteropSystemQuery): Observable<ApiResponse<PageData<InteropSystem>>> {
     const params: Record<string, string> = {
@@ -26,7 +27,7 @@ export class InteropSystemApiService {
     if (query.name.trim()) params['name'] = query.name.trim();
     if (query.status !== 'ALL') params['status'] = query.status;
     return this.http.get<ApiResponse<PageData<InteropSystem>>>(
-      `${environment.apiUrl}/api/interop-systems`,
+      `${this.baseUrl}/interop-systems`,
       { params },
     );
   }
@@ -34,38 +35,38 @@ export class InteropSystemApiService {
   // danh sách rút gọn, không phân trang, dùng cho dropdown
   getAllSummary(): Observable<ApiResponse<InteropSystemSummary[]>> {
     return this.http.get<ApiResponse<InteropSystemSummary[]>>(
-      `${environment.apiUrl}/api/interop-systems/all`,
+      `${this.baseUrl}/interop-systems/all`,
     );
   }
 
   create(payload: CreateInteropSystemPayload): Observable<ApiResponse<InteropSystem>> {
     return this.http.post<ApiResponse<InteropSystem>>(
-      `${environment.apiUrl}/api/interop-systems`,
+      `${this.baseUrl}/interop-systems`,
       payload,
     );
   }
 
   getById(id: number): Observable<ApiResponse<InteropSystem>> {
     return this.http.get<ApiResponse<InteropSystem>>(
-      `${environment.apiUrl}/api/interop-systems/${id}`,
+      `${this.baseUrl}/interop-systems/${id}`,
     );
   }
 
   update(id: number, payload: UpdateInteropSystemPayload): Observable<ApiResponse<InteropSystem>> {
     return this.http.put<ApiResponse<InteropSystem>>(
-      `${environment.apiUrl}/api/interop-systems/${id}`,
+      `${this.baseUrl}/interop-systems/${id}`,
       payload,
     );
   }
 
   toggleStatus(id: number): Observable<ApiResponse<void>> {
     return this.http.patch<ApiResponse<void>>(
-      `${environment.apiUrl}/api/interop-systems/${id}/lock`,
+      `${this.baseUrl}/interop-systems/${id}/lock`,
       {},
     );
   }
 
   remove(id: number): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${environment.apiUrl}/api/interop-systems/${id}`);
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/interop-systems/${id}`);
   }
 }

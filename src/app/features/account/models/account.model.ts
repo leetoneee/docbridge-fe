@@ -26,3 +26,21 @@ export interface AccountDetail {
   /** Cờ boolean (is_temp_password) - KHÔNG phải giá trị mật khẩu thật, khác với ResetAccountPasswordResult.tempPassword */
   tempPassword: boolean;
 }
+
+export interface AccountQuery {
+  role?: string;
+  status?: AccountStatus;
+  email?: string;
+  page: number;
+  size: number;
+}
+
+export interface CreateOperatorPayload {
+  email: string;
+}
+
+export interface CreateOperatorResult {
+  accountId: number;
+  email: string;
+  tempPassword: string; // string giá trị mật khẩu thật — khác AccountDetail.tempPassword (boolean)
+}

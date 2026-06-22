@@ -1,19 +1,18 @@
-<div class="flex flex-col space-y-4">
-  <app-page-header title="Hệ thống liên thông">
+<div class="space-y-4">
+  <app-page-header title="Tài khoản">
     <button actions type="button"
       class="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover"
-      (click)="openAdd()">
+      (click)="addOpen.set(true)">
       <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
         class="lucide lucide-plus-icon lucide-plus size-4">
         <path d="M5 12h14" />
         <path d="M12 5v14" />
-      </svg> Thêm hệ thống
+      </svg> Thêm Operator
     </button>
   </app-page-header>
 
   <div class="rounded-[10px] border border-border bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-    <!-- Filter bar -->
     <div class="flex flex-wrap items-center gap-2 border-b border-border p-3">
       <div class="relative min-w-56 flex-1">
         <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -22,25 +21,36 @@
           <path d="m21 21-4.34-4.34" />
           <circle cx="11" cy="11" r="8" />
         </svg>
-        <input type="text" placeholder="Tìm theo tên hoặc mã hệ thống..."
+        <input type="text" placeholder="Tìm theo email..."
           class="h-10 w-full rounded-lg border border-input bg-transparent pl-8 pr-3 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          (input)="onSearchInput($event)" />
+          (input)="onEmailInput($event)" />
       </div>
 
       <div class="relative">
         <select
-          class="h-10 w-40 appearance-none rounded-lg border border-input bg-transparent py-2 pl-2.5 pr-8 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          [value]="statusFilter()" (change)="onStatusChange($event)">
-          <option value="ALL">Tất cả trạng thái</option>
-          <option value="ACTIVE">Hoạt động</option>
-          <option value="LOCKED">Đã khoá</option>
+          class="h-10 w-44 appearance-none rounded-lg border border-input bg-transparent py-2 pl-2.5 pr-8 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          (change)="onRoleChange($event)">
+          <option value="ALL">Vai trò: Tất cả</option>
+          <!-- <option value="ADMIN">Quản trị viên</option> -->
+          <option value="OPERATOR">Vận hành viên</option>
+          <option value="UNIT">Đơn vị liên thông</option>
         </select>
-
         <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
           class="lucide lucide-chevron-down-icon lucide-chevron-down pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-text-muted">
           <path d="m6 9 6 6 6-6" />
         </svg>
+      </div>
+
+      <div class="relative">
+        <select
+          class="h-10 w-44 appearance-none rounded-lg border border-input bg-transparent py-2 pl-2.5 pr-8 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          (change)="onStatusChange($event)">
+          <option value="ALL">Tất cả trạng thái</option>
+          <option value="ACTIVE">Hoạt động</option>
+          <option value="LOCKED">Đã khoá</option>
+          <option value="PENDING">Chờ duyệt</option>
+        </select>
       </div>
 
       <app-tooltip label="Làm mới">
@@ -60,79 +70,78 @@
     </div>
 
     @if (loading()) {
-    <div class="flex flex-col space-y-3 p-4">
-      @for (i of [1, 2, 3, 4, 5]; track i) {
+    <div class="space-y-3 p-4">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
       <div class="flex items-center gap-4">
-        <div class="h-5 w-24 animate-pulse rounded-md bg-muted"></div>
-        <div class="h-5 flex-1 animate-pulse rounded-md bg-muted"></div>
-        <div class="h-5 w-16 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 w-48 animate-pulse rounded-md bg-muted"></div>
         <div class="h-5 w-20 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 w-20 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 flex-1 animate-pulse rounded-md bg-muted"></div>
         <div class="h-5 w-24 animate-pulse rounded-md bg-muted"></div>
       </div>
       }
     </div>
     } @else if (errorMessage()) {
     <div class="p-6 text-center text-sm text-destructive">{{ errorMessage() }}</div>
-    } @else if (systems().length === 0) {
-    <app-empty-state title="Chưa có hệ thống liên thông"
-      subtitle="Thêm hệ thống liên thông đầu tiên để bắt đầu kết nối các đơn vị.">
+    } @else if (accounts().length === 0) {
+    <app-empty-state title="Chưa có tài khoản nào"
+      subtitle="Tạo tài khoản Operator đầu tiên để bắt đầu quản lý hệ thống.">
       <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-        class="lucide lucide-network-icon lucide-network size-6">
-        <rect x="16" y="16" width="6" height="6" rx="1" />
-        <rect x="2" y="16" width="6" height="6" rx="1" />
-        <rect x="9" y="2" width="6" height="6" rx="1" />
-        <path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3" />
-        <path d="M12 12V8" />
+        class="lucide lucide-users-icon lucide-users size-6">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <path d="M16 3.128a4 4 0 0 1 0 7.744" />
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+        <circle cx="9" cy="7" r="4" />
       </svg>
       <button action type="button"
         class="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
-        (click)="openAdd()">
+        (click)="addOpen.set(true)">
         <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
           class="lucide lucide-plus-icon lucide-plus size-4">
           <path d="M5 12h14" />
           <path d="M12 5v14" />
         </svg>
-        Thêm hệ thống
+        Thêm Operator
       </button>
     </app-empty-state>
     } @else {
-    <div class="relative w-full">
+    <div class="relative w-full overflow-x-hidden">
       <table class="w-full caption-bottom text-sm">
-        <thead class="[&_tr]:border-b">
+        <thead>
           <tr class="border-b border-border">
-            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Mã hệ thống</th>
-            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Tên hệ thống</th>
-            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Mô tả</th>
-            <th class="h-10 px-2 text-center align-middle font-medium text-foreground">Số đơn vị</th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Email</th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Vai trò</th>
             <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Trạng thái</th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Lần đăng nhập gần nhất</th>
             <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Ngày tạo</th>
             <th class="h-10 px-2 text-right align-middle font-medium text-foreground">Thao tác</th>
           </tr>
         </thead>
         <tbody class="[&_tr:last-child]:border-0">
-          @for (sys of systems(); track sys.id) {
+          @for (acc of accounts(); track acc.id) {
           <tr class="border-b border-border transition-colors hover:bg-muted/50">
-            <td class="p-2 align-middle font-mono text-[13px] text-foreground">{{ sys.code }}</td>
-            <td class="p-2 align-middle font-medium text-foreground">{{ sys.name }}</td>
-            <td class="max-w-56 truncate p-2 align-middle text-text-secondary">{{ sys.description }}</td>
-            <td class="p-2 text-center align-middle">
-              <span
-                class="inline-flex h-5 w-fit items-center justify-center rounded-4xl bg-muted px-2 text-xs font-medium text-muted-foreground">
-                {{ sys.unitCount }}
-              </span>
+            <td class="p-2 align-middle font-mono text-[13px] text-foreground">{{ acc.email }}</td>
+            <td class="p-2 align-middle">
+              <app-role-badge [roleCode]="acc.roleCode"></app-role-badge>
             </td>
             <td class="p-2 align-middle">
-              <app-status-badge [status]="sys.status"></app-status-badge>
+              <app-status-badge [status]="acc.status"></app-status-badge>
             </td>
-            <td class="p-2 align-middle text-[13px] text-text-secondary">{{ sys.createdAt | localDate: 'dd/MM/yyyy'}}
+            <td class="p-2 align-middle text-[13px] text-text-secondary">
+              @if (acc.lastLoginAt) {
+              {{ acc.lastLoginAt | localDate: 'dd/MM/yyyy HH:mm' }}
+              } @else {
+              <span class="text-text-muted">Chưa đăng nhập</span>
+              }
             </td>
+            <td class="p-2 align-middle text-[13px] text-text-secondary">{{ acc.createdAt | localDate }}</td>
             <td class="p-2 align-middle">
               <div class="flex items-center justify-end gap-0.5">
                 <app-tooltip label="Xem">
                   <button type="button" class="flex size-7 items-center justify-center rounded-md hover:bg-muted"
-                    (click)="openDetail(sys.id)">
+                    (click)="openDetail(acc.id)">
                     <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       class="lucide lucide-eye-icon lucide-eye size-4">
@@ -143,10 +152,10 @@
                   </button>
                 </app-tooltip>
 
-                <app-tooltip [label]="sys.status === 'LOCKED' ? 'Mở khoá' : 'Khoá'">
+                <app-tooltip [label]="acc.status === 'LOCKED' ? 'Mở khoá' : 'Khoá'">
                   <button type="button" class="flex size-7 items-center justify-center rounded-md hover:bg-muted"
-                    (click)="askToggleStatus(sys)">
-                    @if (sys.status === 'LOCKED') {
+                    (click)="askToggleLock(acc)">
+                    @if (acc.status === 'LOCKED') {
                     <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       class="lucide lucide-lock-open-icon lucide-lock-open size-4">
@@ -164,18 +173,15 @@
                   </button>
                 </app-tooltip>
 
-                <app-tooltip [label]="sys.unitCount > 0 ? 'Không thể xoá (còn đơn vị)' : 'Xoá'">
-                  <button type="button"
-                    class="flex size-7 items-center justify-center rounded-md text-destructive hover:bg-muted disabled:pointer-events-none disabled:opacity-50"
-                    [disabled]="sys.unitCount > 0" (click)="askDelete(sys)">
+                <app-tooltip label="Reset mật khẩu">
+                  <button type="button" class="flex size-7 items-center justify-center rounded-md hover:bg-muted"
+                    (click)="resetTarget.set(acc)">
                     <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                      class="lucide lucide-trash2-icon lucide-trash-2 size-4">
-                      <path d="M10 11v6" />
-                      <path d="M14 11v6" />
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                      <path d="M3 6h18" />
-                      <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      class="lucide lucide-key-round-icon lucide-key-round size-4">
+                      <path
+                        d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" />
+                      <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" />
                     </svg>
                   </button>
                 </app-tooltip>
@@ -201,18 +207,14 @@
             <path d="m15 18-6-6 6-6" />
           </svg>
         </button>
-
         @for (p of pageNumbers(); track p) {
         <button type="button" class="flex size-7 items-center justify-center rounded-md border text-xs font-medium"
-          [class]="
-                p === page()
-                  ? 'border-primary bg-primary text-primary-foreground'
-                  : 'border-border text-foreground hover:bg-muted'
-              " (click)="goToPage(p)">
+          [class]="p === page()
+                ? 'border-primary bg-primary text-primary-foreground'
+                : 'border-border text-foreground hover:bg-muted'" (click)="goToPage(p)">
           {{ p + 1 }}
         </button>
         }
-
         <button type="button"
           class="flex size-7 items-center justify-center rounded-md border border-border disabled:pointer-events-none disabled:opacity-50"
           [disabled]="page() >= totalPages() - 1" (click)="goToPage(page() + 1)">
@@ -220,18 +222,23 @@
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
             class="lucide lucide-chevron-right-icon lucide-chevron-right size-4">
             <path d="m9 18 6-6-6-6" />
-          </svg> </button>
+          </svg>
+        </button>
       </div>
     </div>
     }
   </div>
 
-  <app-interop-system-add [open]="addOpen()" (openChange)="addOpen.set($event)"
-    (created)="onCreated($event)"></app-interop-system-add>
+  <app-add-operator-modal [open]="addOpen()" (openChange)="onAddModalOpenChange($event)"></app-add-operator-modal>
+
+  @if (resetTarget(); as acc) {
+  <app-reset-password-modal [open]="true" [accountId]="acc.id"
+    (openChange)="onResetModalOpenChange($event)"></app-reset-password-modal>
+  }
 
   <app-confirm-dialog [open]="!!lockTarget()" [title]="lockDialogTitle()" [description]="lockDialogDescription()"
     [confirmLabel]="lockDialogConfirmLabel()" [destructive]="lockDialogDestructive()" [iconTone]="lockDialogTone()"
-    [loading]="actionLoading()" (openChange)="lockTarget.set(null)" (confirm)="confirmToggleStatus()">
+    [loading]="actionLoading()" (openChange)="lockTarget.set(null)" (confirm)="confirmToggleLock()">
     @if (lockTarget()?.status === 'LOCKED') {
     <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -247,19 +254,6 @@
       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
     </svg>
     }
-  </app-confirm-dialog>
 
-  <app-confirm-dialog [open]="!!deleteTarget()" title="Xoá hệ thống liên thông"
-    [description]="deleteDialogDescription()" confirmLabel="Xoá hệ thống" [loading]="actionLoading()"
-    (openChange)="deleteTarget.set(null)" (confirm)="confirmDelete()">
-    <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="lucide lucide-trash2-icon lucide-trash-2 size-5">
-      <path d="M10 11v6" />
-      <path d="M14 11v6" />
-      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-      <path d="M3 6h18" />
-      <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-    </svg>
   </app-confirm-dialog>
 </div>

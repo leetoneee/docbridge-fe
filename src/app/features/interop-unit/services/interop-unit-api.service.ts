@@ -19,9 +19,10 @@ import { environment } from '../../../../environments/environment';
 })
 export class InteropUnitApiService {
   private http = inject(HttpClient);
+  baseUrl =`${environment.apiUrl}/api/v1`
 
   create(payload: CreateInteropUnitPayload): Observable<ApiResponse<InteropUnit>> {
-    return this.http.post<ApiResponse<InteropUnit>>(`${environment.apiUrl}/api/units`, payload);
+    return this.http.post<ApiResponse<InteropUnit>>(`${this.baseUrl}/units`, payload);
   }
 
   getList(query: InteropUnitQuery): Observable<ApiResponse<PageData<InteropUnit>>> {
@@ -42,18 +43,18 @@ export class InteropUnitApiService {
       params['keyword'] = query.keyword.trim();
     }
 
-    return this.http.get<ApiResponse<PageData<InteropUnit>>>(`${environment.apiUrl}/api/units`, {
+    return this.http.get<ApiResponse<PageData<InteropUnit>>>(`${this.baseUrl}/units`, {
       params,
     });
   }
 
   getById(id: number): Observable<ApiResponse<InteropUnitDetail>> {
-    return this.http.get<ApiResponse<InteropUnitDetail>>(`${environment.apiUrl}/api/units/${id}`);
+    return this.http.get<ApiResponse<InteropUnitDetail>>(`${this.baseUrl}/units/${id}`);
   }
 
   update(id: number, payload: UpdateInteropUnitPayload): Observable<ApiResponse<InteropUnit>> {
     return this.http.put<ApiResponse<InteropUnit>>(
-      `${environment.apiUrl}/api/units/${id}`,
+      `${this.baseUrl}/units/${id}`,
       payload,
     );
   }
@@ -61,32 +62,32 @@ export class InteropUnitApiService {
   /** (Admin only, tách riêng khỏi update() thông thường) */
   changeEmail(id: number, payload: ChangeUnitEmailPayload): Observable<ApiResponse<InteropUnit>> {
     return this.http.patch<ApiResponse<InteropUnit>>(
-      `${environment.apiUrl}/api/units/${id}/email`,
+      `${this.baseUrl}/units/${id}/email`,
       payload,
     );
   }
 
   toggleLock(id: number): Observable<ApiResponse<void>> {
     return this.http.post<ApiResponse<void>>(
-      `${environment.apiUrl}/api/units/${id}/toggle-lock`,
+      `${this.baseUrl}/units/${id}/toggle-lock`,
       {},
     );
   }
 
   remove(id: number): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${environment.apiUrl}/api/units/${id}`);
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/units/${id}`);
   }
 
   approve(id: number): Observable<ApiResponse<ApproveInteropUnitResult>> {
     return this.http.post<ApiResponse<ApproveInteropUnitResult>>(
-      `${environment.apiUrl}/api/units/${id}/approve`,
+      `${this.baseUrl}/units/${id}/approve`,
       {},
     );
   }
 
   reject(id: number, payload: RejectInteropUnitPayload): Observable<ApiResponse<string>> {
     return this.http.post<ApiResponse<string>>(
-      `${environment.apiUrl}/api/units/${id}/reject`,
+      `${this.baseUrl}/units/${id}/reject`,
       payload,
     );
   }

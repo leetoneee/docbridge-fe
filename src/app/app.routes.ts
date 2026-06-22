@@ -40,17 +40,15 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/interop-unit/interop-unit.routes').then((m) => m.INTEROP_UNIT_ROUTES),
       },
+      {
+        path: 'accounts',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'OPERATOR'] },
+        loadChildren: () =>
+          import('./features/account/account.routes').then((m) => m.ACCOUNT_ROUTES),
+      },
     ],
   },
-
-  //     {
-  //       path: 'accounts',
-  //       canActivate: [roleGuard],
-  //       data: { roles: ['ADMIN', 'OPERATOR'] },
-  //       loadChildren: () =>
-  //         import('./features/account/account.routes')
-  //           .then(m => m.ACCOUNT_ROUTES),
-  //     },
   //     {
   //       path: 'permissions',
   //       canActivate: [roleGuard],
