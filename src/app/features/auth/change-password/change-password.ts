@@ -73,9 +73,9 @@ export class ChangePassword {
   onClose(): void {
     const role = this.currentUser.role();
     if (role === 'UNIT') {
-      this.router.navigate(['/portal/outbox']);
+      this.router.navigate(['/unit/portal/outbox']);
     } else {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/admin/dashboard']);
     }
   }
 

@@ -5,5 +5,8 @@ export const ACCOUNT_ROUTES: Routes = [
     path: '',
     loadComponent: () => import('./account-list/account-list').then((m) => m.AccountList),
   },
-  // TODO: route ':id' khi có v0 account-detail
+  {
+    path: ':id',
+    loadComponent: () => import('./account-detail/account-detail').then((m) => m.AccountDetail),
+  },
 ];
