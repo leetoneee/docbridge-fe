@@ -28,4 +28,6 @@ export class CurrentUserService {
   });
   readonly unitId      = computed(() => this.user()?.unitId ?? null);
   readonly permissions = computed(() => this.user()?.permissions ?? []);
+  readonly accountId = computed(() => this.user()?.accountId ?? 0);
+
 }

@@ -3,6 +3,7 @@ import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { CurrentUserService } from '../../../core/services/current-user.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
+import { ProfileModal } from '../../../shared/components/profile-modal/profile-modal';
 
 interface Breadcrumb {
   label: string;
@@ -28,7 +29,7 @@ const DETAIL_LABEL = 'Chi tiết';
 @Component({
   selector: 'app-admin-header',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, ProfileModal],
   templateUrl: './admin-header.html',
   styleUrl: './admin-header.css',
 })
