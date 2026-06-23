@@ -7,7 +7,7 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { InfoRowComponent } from '../../../shared/components/info-card/info-row/info-row';
 import { InfoGridComponent } from '../../../shared/components/info-card/info-grid/info-grid';
 import { InfoCardComponent } from '../../../shared/components/info-card/info-card/info-card';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AccountApiService } from '../services/account-api.service';
 import { AccountDetail as AccountDetailInfo  } from '../models/account.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -16,7 +16,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'app-account-detail',
   standalone: true,
   imports: [
-    RouterLink,
     InfoCardComponent,
     InfoGridComponent,
     InfoRowComponent,

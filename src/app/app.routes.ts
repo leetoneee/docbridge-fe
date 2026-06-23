@@ -47,16 +47,16 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/account/account.routes').then((m) => m.ACCOUNT_ROUTES),
       },
+      {
+        path: 'permissions',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] },
+        loadChildren: () =>
+          import('./features/permission/permission.routes').then((m) => m.PERMISSION_ROUTES),
+      },
     ],
   },
-  //     {
-  //       path: 'permissions',
-  //       canActivate: [roleGuard],
-  //       data: { roles: ['ADMIN'] },
-  //       loadChildren: () =>
-  //         import('./features/permission/permission.routes')
-  //           .then(m => m.PERMISSION_ROUTES),
-  //     },
+
   //     {
   //       path: 'logs',
   //       canActivate: [roleGuard],
