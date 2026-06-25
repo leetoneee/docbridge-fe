@@ -1,8 +1,8 @@
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import {
   DateRangePreset,
-  InboxFilterParams,
   Transaction,
+  TransactionFilterParams,
   TransactionStatus,
 } from '../models/transaction.model';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header';
@@ -86,22 +86,43 @@ export class InboxList {
   // ── Helpers: tính from/to từ preset ─────────────────────────
   private resolveDateRange(preset: DateRangePreset): { from?: string; to?: string } {
     const now = new Date();
+
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const fmt = (d: Date) => d.toISOString().split('T')[0];
+
+    const fmt = (d: Date) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    };
 
     switch (preset) {
       case 'today':
-        return { from: `${fmt(today)}T00:00:00`, to: `${fmt(today)}T23:59:59` };
+        return {
+          from: `${fmt(today)}T00:00:00`,
+          to: `${fmt(today)}T23:59:59.999`,
+        };
+
       case '7d': {
         const from = new Date(today);
         from.setDate(from.getDate() - 6);
-        return { from: `${fmt(from)}T00:00:00`, to: `${fmt(today)}T23:59:59` };
+
+        return {
+          from: `${fmt(from)}T00:00:00`,
+          to: `${fmt(today)}T23:59:59.999`,
+        };
       }
+
       case '30d': {
         const from = new Date(today);
         from.setDate(from.getDate() - 29);
-        return { from: `${fmt(from)}T00:00:00`, to: `${fmt(today)}T23:59:59` };
+
+        return {
+          from: `${fmt(from)}T00:00:00`,
+          to: `${fmt(today)}T23:59:59.999`,
+        };
       }
+
       default:
         return {};
     }
@@ -113,15 +134,14 @@ export class InboxList {
     this.errorMessage.set(null);
 
     const { from, to } = this.resolveDateRange(this.dateRangePreset());
-
-    const params: InboxFilterParams = {
+    const params: TransactionFilterParams = {
       page: this.page(),
       size: this.pageSize(),
     };
-    if (this.searchTerm()) params.documentCode = this.searchTerm(); // search term dùng cho cả documentCode + title; tuỳ BE
-    if (this.searchTerm()) params.title = this.searchTerm();
+
+    if (this.searchTerm().trim()) params.keyword = this.searchTerm().trim(); // 1 param duy nhất
     if (this.statusFilter()) params.status = this.statusFilter() as TransactionStatus;
-    if (this.senderFilter()) params.counterpartCode = this.senderFilter();
+    if (this.senderFilter()) params.counterpartCode = this.senderFilter(); // outbox
     if (from) params.from = from;
     if (to) params.to = to;
 
@@ -134,7 +154,7 @@ export class InboxList {
           this.loading.set(false);
         },
         error: () => {
-          this.errorMessage.set('Không thể tải danh sách văn bản đến.');
+          this.errorMessage.set('...');
           this.loading.set(false);
         },
       });

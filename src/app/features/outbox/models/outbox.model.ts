@@ -1,6 +1,5 @@
 export interface OutboxFilterParams {
-  documentCode?: string;
-  title?: string;
+  keyword?: string;
   counterpartCode?: string;
   status?: string;
   from?: string;

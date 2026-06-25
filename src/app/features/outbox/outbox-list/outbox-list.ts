@@ -6,7 +6,12 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { CreateOutboxModal } from '../create-outbox-modal/create-outbox-modal';
 import { LocalDatePipe } from '../../../shared/pipes/local-date-pipe';
 import { PageData } from '../../../shared/models/api-response.model';
-import { DateRangePreset, Transaction } from '../../inbox/models/transaction.model';
+import {
+  DateRangePreset,
+  Transaction,
+  TransactionFilterParams,
+  TransactionStatus,
+} from '../../inbox/models/transaction.model';
 import { OutboxApiService } from '../services/outbox-api.service';
 import { InteropUnitApiService } from '../../interop-unit/services/interop-unit-api.service';
 import { Router } from '@angular/router';
@@ -79,21 +84,43 @@ export class OutboxList {
 
   private resolveDateRange(preset: DateRangePreset): { from?: string; to?: string } {
     const now = new Date();
+
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const fmt = (d: Date) => d.toISOString().split('T')[0];
+
+    const fmt = (d: Date) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    };
+
     switch (preset) {
       case 'today':
-        return { from: `${fmt(today)}T00:00:00`, to: `${fmt(today)}T23:59:59` };
+        return {
+          from: `${fmt(today)}T00:00:00`,
+          to: `${fmt(today)}T23:59:59.999`,
+        };
+
       case '7d': {
         const from = new Date(today);
         from.setDate(from.getDate() - 6);
-        return { from: `${fmt(from)}T00:00:00`, to: `${fmt(today)}T23:59:59` };
+
+        return {
+          from: `${fmt(from)}T00:00:00`,
+          to: `${fmt(today)}T23:59:59.999`,
+        };
       }
+
       case '30d': {
         const from = new Date(today);
         from.setDate(from.getDate() - 29);
-        return { from: `${fmt(from)}T00:00:00`, to: `${fmt(today)}T23:59:59` };
+
+        return {
+          from: `${fmt(from)}T00:00:00`,
+          to: `${fmt(today)}T23:59:59.999`,
+        };
       }
+
       default:
         return {};
     }
@@ -104,13 +131,15 @@ export class OutboxList {
     this.errorMessage.set(null);
 
     const { from, to } = this.resolveDateRange(this.dateRangePreset());
-    const params: OutboxFilterParams = { page: this.page(), size: this.pageSize() };
-    if (this.searchTerm()) {
-      params.documentCode = this.searchTerm();
-      params.title = this.searchTerm();
-    }
-    if (this.statusFilter()) params.status = this.statusFilter();
-    if (this.receiverFilter()) params.counterpartCode = this.receiverFilter();
+    const params: TransactionFilterParams = {
+      page: this.page(),
+      size: this.pageSize(),
+    };
+
+    if (this.searchTerm().trim()) params.keyword = this.searchTerm().trim(); // 1 param duy nhất
+    if (this.statusFilter()) params.status = this.statusFilter() as TransactionStatus;
+    if (this.receiverFilter()) params.counterpartCode = this.receiverFilter(); // outbox
+    // if (this.senderFilter())   params.counterpartCode = this.senderFilter();  // inbox
     if (from) params.from = from;
     if (to) params.to = to;
 
@@ -123,7 +152,7 @@ export class OutboxList {
           this.loading.set(false);
         },
         error: () => {
-          this.errorMessage.set('Không thể tải danh sách văn bản đã gửi.');
+          this.errorMessage.set('...');
           this.loading.set(false);
         },
       });

@@ -35,9 +35,8 @@ export interface Transaction {
 }
 
 // Filter params
-export interface InboxFilterParams {
-  documentCode?: string;
-  title?: string;
+export interface TransactionFilterParams {
+  keyword?: string;
   counterpartCode?: string;
   status?: TransactionStatus | '';
   from?: string; // ISO date string gửi lên API
