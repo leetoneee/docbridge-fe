@@ -1,0 +1,249 @@
+<div class="flex flex-col space-y-4">
+  <app-page-header title="Hộp thư đến" />
+
+  <div class="rounded-[10px] border border-border bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+
+    <!-- Filter bar -->
+    <div class="flex flex-wrap items-center gap-2 border-b border-border p-3">
+
+      <!-- Search -->
+      <div class="relative min-w-56 flex-1">
+        <svg icon class="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-text-muted"
+          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.34-4.34" />
+          <circle cx="11" cy="11" r="8" />
+        </svg>
+        <input type="text" placeholder="Tìm theo số hiệu hoặc tiêu đề..."
+          class="h-10 w-full rounded-lg border border-input bg-transparent pl-8 pr-3 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          (input)="onSearchInput($event)" />
+      </div>
+
+      <!-- Sender unit -->
+      <div class="relative">
+        <select
+          class="h-10 w-52 appearance-none rounded-lg border border-input bg-transparent py-2 pl-2.5 pr-8 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          [value]="senderFilter()" (change)="onSenderChange($event)">
+          <option value="">Tất cả đơn vị gửi</option>
+          @for (u of senderUnits(); track u.id) {
+          <option [value]="u.interopCode">{{ u.name }}</option>
+          }
+        </select>
+        <svg icon class="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-text-muted"
+          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+        </svg>
+      </div>
+
+      <!-- Status -->
+      <div class="relative">
+        <select
+          class="h-10 w-44 appearance-none rounded-lg border border-input bg-transparent py-2 pl-2.5 pr-8 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          [value]="statusFilter()" (change)="onStatusChange($event)">
+          <option value="">Tất cả trạng thái</option>
+          <option value="SENT">Chờ xử lý</option>
+          <option value="ACCEPTED">Đã chấp nhận</option>
+          <option value="REJECTED">Đã từ chối</option>
+          <option value="CANCELLED">Đã thu hồi</option>
+        </select>
+        <svg icon class="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-text-muted"
+          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+        </svg>
+      </div>
+
+      <!-- Date range preset -->
+      <div class="relative">
+        <select
+          class="h-10 w-40 appearance-none rounded-lg border border-input bg-transparent py-2 pl-2.5 pr-8 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          [value]="dateRangePreset()" (change)="onRangeChange($event)">
+          <option value="all">Tất cả thời gian</option>
+          <option value="today">Hôm nay</option>
+          <option value="7d">7 ngày</option>
+          <option value="30d">30 ngày</option>
+        </select>
+        <svg icon class="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-text-muted"
+          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+        </svg>
+      </div>
+
+      <!-- Refresh -->
+      <app-tooltip label="Làm mới">
+        <button type="button"
+          class="flex size-9 items-center justify-center rounded-lg border border-border hover:bg-muted"
+          (click)="refresh()">
+          <svg icon class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 3v5h-5" />
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H3v5" />
+          </svg>
+        </button>
+      </app-tooltip>
+    </div>
+
+    <!-- Loading skeleton -->
+    @if (loading()) {
+    <div class="flex flex-col space-y-3 p-4">
+      @for (i of [1,2,3,4,5]; track i) {
+      <div class="flex items-center gap-4">
+        <div class="h-5 w-4 animate-pulse rounded-full bg-muted"></div>
+        <div class="h-5 w-28 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 w-36 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 w-20 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 w-24 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 w-8 animate-pulse rounded-md bg-muted ml-auto"></div>
+      </div>
+      }
+    </div>
+
+    <!-- Error -->
+    } @else if (errorMessage()) {
+    <div class="p-6 text-center text-sm text-destructive">{{ errorMessage() }}</div>
+
+    <!-- Empty -->
+    } @else if (transactions().length === 0) {
+    <app-empty-state title="Hộp thư trống" subtitle="Không tìm thấy văn bản phù hợp với bộ lọc hiện tại.">
+      <svg icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+        stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M21.75 9v.906a2.25 2.25 0 0 1-1.183 1.981l-6.478 3.488M2.25 9v.906a2.25 2.25 0 0 0 1.183 1.981l6.478 3.488m8.839 2.51-4.66-2.51m0 0-1.023-.55a2.25 2.25 0 0 0-2.134 0l-1.022.55m0 0-4.661 2.51m16.5 1.615a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V8.844a2.25 2.25 0 0 1 1.183-1.981l7.5-4.039a2.25 2.25 0 0 1 2.134 0l7.5 4.039a2.25 2.25 0 0 1 1.183 1.98V19.5Z" />
+      </svg>
+    </app-empty-state>
+
+    <!-- Table -->
+    } @else {
+    <div class="relative w-full">
+      <table class="w-full caption-bottom text-sm">
+        <thead>
+          <tr class="border-b border-border">
+            <th class="h-10 w-8 px-3 align-middle" aria-label="Trạng thái xử lý"></th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">
+              Số hiệu văn bản
+            </th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">
+              Tiêu đề
+            </th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">
+              Đơn vị gửi
+            </th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">
+              Trạng thái
+            </th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">
+              Ngày nhận
+            </th>
+            <th class="h-10 px-2 text-right align-middle font-medium text-foreground">
+              Thao tác
+            </th>
+          </tr>
+        </thead>
+        <tbody class="[&_tr:last-child]:border-0">
+          @for (tx of transactions(); track tx.id) {
+          <tr class="border-b border-border transition-colors hover:bg-muted/50 cursor-pointer"
+            [class.bg-primary/[0.03]]="isUnprocessed(tx)" (click)="goToDetail(tx.transactionCode)">
+
+            <!-- Unprocessed dot -->
+            <td class="p-2 align-middle">
+              @if (isUnprocessed(tx)) {
+              <span class="block size-2 rounded-full bg-primary" aria-label="Chưa xử lý"></span>
+              }
+            </td>
+
+            <!-- Số hiệu văn bản -->
+            <td class="p-2 align-middle">
+              <span [class]="isUnprocessed(tx)
+                    ? 'font-semibold text-text-primary'
+                    : 'font-mono text-text-secondary'">
+                {{ tx.documentCode }}
+              </span>
+            </td>
+
+            <td class="p-2 align-middle max-w-70">
+              <span class="block truncate font-medium text-foreground" [title]="tx.title">
+                {{ tx.title }}
+              </span>
+            </td>
+
+            <!-- Đơn vị gửi -->
+            <td class="p-2 align-middle">
+              <span [class]="isUnprocessed(tx)
+                    ? 'font-semibold text-primary'
+                    : 'font-normal text-foreground'">
+                {{ tx.sender.name }}
+              </span>
+              <span class="block font-mono text-xs text-text-muted">{{ tx.sender.interopCode }}</span>
+            </td>
+
+            <!-- Trạng thái -->
+            <td class="p-2 align-middle">
+              <app-status-badge [status]="tx.status" />
+            </td>
+
+            <!-- Ngày nhận -->
+            <td class="p-2 align-middle">
+              <span class="text-[13px] text-text-secondary">
+                {{ tx.createdAt | localDate: 'dd/MM/yyyy HH:mm' }}
+              </span>
+            </td>
+
+            <!-- Thao tác -->
+            <td class="p-2 text-right align-middle">
+              <app-tooltip label="Xem chi tiết">
+                <button type="button" class="flex size-7 items-center justify-center rounded-md hover:bg-muted"
+                  (click)="$event.stopPropagation(); goToDetail(tx.transactionCode)">
+                  <svg icon class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                </button>
+              </app-tooltip>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex items-center justify-between border-t border-border px-4 py-3">
+      <p class="text-[13px] text-text-secondary">
+        Hiển thị {{ rangeStart() }}–{{ rangeEnd() }} trên {{ totalElements() }} kết quả
+      </p>
+      <div class="flex items-center gap-1">
+        <button type="button"
+          class="flex size-7 items-center justify-center rounded-md border border-border disabled:pointer-events-none disabled:opacity-50"
+          [disabled]="page() === 0" (click)="goToPage(page() - 1)">
+          <svg icon class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6" />
+          </svg>
+        </button>
+
+        @for (p of pageNumbers(); track p) {
+        <button type="button" class="flex size-7 items-center justify-center rounded-md border text-xs font-medium"
+          [class]="p === page()
+                ? 'border-primary bg-primary text-primary-foreground'
+                : 'border-border text-foreground hover:bg-muted'" (click)="goToPage(p)">
+          {{ p + 1 }}
+        </button>
+        }
+
+        <button type="button"
+          class="flex size-7 items-center justify-center rounded-md border border-border disabled:pointer-events-none disabled:opacity-50"
+          [disabled]="page() >= totalPages() - 1" (click)="goToPage(page() + 1)">
+          <svg icon class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+</div>

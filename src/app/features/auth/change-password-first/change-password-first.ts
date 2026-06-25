@@ -98,7 +98,7 @@ export class ChangePasswordFirst {
         if (res.code === 'SUCCESS') {
           // Xoá flag mustChangePassword rồi navigate
           this.auth.clearMustChangePwd();
-          this.router.navigate(['/']);
+          this.router.navigate(['/auth/login']);
         } else {
           this.serverError.set(res.message);
           this.isLoading.set(false);

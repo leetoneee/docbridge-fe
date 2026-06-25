@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { CurrentUserService } from '../../../core/services/current-user.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { ProfileModal } from '../../../shared/components/profile-modal/profile-modal';
+import { RoleBadgeComponent } from '../../../shared/components/role-badge/role-badge';
 
 interface Breadcrumb {
   label: string;
@@ -19,7 +20,7 @@ const ROUTE_LABELS: Record<string, RouteLabelConfig> = {
   dashboard: { label: 'Dashboard' },
   systems: { label: 'Hệ thống liên thông', group: 'Liên thông' },
   units: { label: 'Đơn vị liên thông', group: 'Liên thông' },
-  accounts: { label: 'Tài khoản', group: 'Quản trị'},
+  accounts: { label: 'Tài khoản', group: 'Quản trị' },
   permissions: { label: 'Phân quyền', group: 'Quản trị' },
   logs: { label: 'Nhật ký hệ thống', group: 'Giám sát' },
 };
@@ -29,13 +30,15 @@ const DETAIL_LABEL = 'Chi tiết';
 @Component({
   selector: 'app-admin-header',
   standalone: true,
-  imports: [RouterLink, ProfileModal],
+  imports: [RouterLink, ProfileModal, RoleBadgeComponent],
   templateUrl: './admin-header.html',
   styleUrl: './admin-header.css',
 })
 export class AdminHeader {
   currentUser = inject(CurrentUserService);
   private router = inject(Router);
+
+  readonly role = signal(this.currentUser.role() ?? 'UNIT');
 
   breadcrumbs = toSignal(
     this.router.events.pipe(

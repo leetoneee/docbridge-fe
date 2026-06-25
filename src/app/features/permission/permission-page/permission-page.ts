@@ -20,7 +20,7 @@ type AssignedFilter = 'all' | 'assigned' | 'unassigned';
 @Component({
   selector: 'app-permission-page',
   standalone: true,
-  imports: [KeyValuePipe],
+  imports: [],
   templateUrl: './permission-page.html',
   styleUrl: './permission-page.css',
 })

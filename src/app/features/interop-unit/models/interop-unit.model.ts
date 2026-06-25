@@ -86,3 +86,10 @@ export interface InteropUnitAccountInfo {
   status: AccountStatus;
   lastLoginAt?: LocalDateTimeArray;
 }
+
+export interface UnitSummary {
+  id: number;
+  interopCode: string;
+  name: string;
+  email: string;
+}

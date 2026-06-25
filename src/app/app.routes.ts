@@ -68,27 +68,24 @@ export const routes: Routes = [
   // },
 
   // Unit shell — portal layout riêng
-  // {
-  //   path: 'portal',
-  //   loadComponent: () =>
-  //     import('./layouts/portal-layout/portal-layout.component')
-  //       .then(m => m.PortalLayoutComponent),
-  //   canActivate: [authGuard, firstLoginGuard, roleGuard],
-  //   data: { roles: ['UNIT'] },
-  //   children: [
-  //     { path: '', redirectTo: 'outbox', pathMatch: 'full' },
-  //     {
-  //       path: 'outbox',
-  //       loadChildren: () =>
-  //         import('./features/outbox/outbox.routes').then(m => m.OUTBOX_ROUTES),
-  //     },
-  //     {
-  //       path: 'inbox',
-  //       loadChildren: () =>
-  //         import('./features/inbox/inbox.routes').then(m => m.INBOX_ROUTES),
-  //     },
-  //   ],
-  // },
+  {
+    path: 'portal',
+    loadComponent: () =>
+      import('./layouts/portal-layout/portal-layout').then((m) => m.PortalLayout),
+    canActivate: [authGuard, firstLoginGuard, roleGuard],
+    data: { roles: ['UNIT'] },
+    children: [
+      { path: '', redirectTo: 'outbox', pathMatch: 'full' },
+      {
+        path: 'outbox',
+        loadChildren: () => import('./features/outbox/outbox.routes').then((m) => m.OUTBOX_ROUTES),
+      },
+      {
+        path: 'inbox',
+        loadChildren: () => import('./features/inbox/inbox.routes').then((m) => m.INBOX_ROUTES),
+      },
+    ],
+  },
 
   // Fallback
   // { path: '403', loadComponent: () => import('./shared/components/error-403/error-403.component').then(m => m.Error403Component) },
