@@ -1,0 +1,148 @@
+<div class="flex flex-col gap-4">
+  <button type="button"
+    class="inline-flex w-fit items-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-foreground"
+    (click)="goBack()">
+    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+      stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+    </svg>
+    Quay lại danh sách
+  </button>
+
+  @if (loading()) {
+  <!-- Skeleton header -->
+  <div class="flex items-center gap-3">
+    <div class="h-7 w-48 animate-pulse rounded-md bg-muted"></div>
+    <div class="h-5 w-20 animate-pulse rounded-full bg-muted"></div>
+  </div>
+  <!-- Skeleton body -->
+  <div class="flex flex-col gap-4 lg:flex-row">
+    <div class="flex flex-col gap-4 lg:w-[70%]">
+      <div class="rounded-[10px] border border-border bg-surface p-4 flex flex-col space-y-3">
+        @for (i of [1,2,3,4,5,6]; track i) {
+        <div class="flex gap-4">
+          <div class="h-5 w-28 animate-pulse rounded-md bg-muted shrink-0"></div>
+          <div class="h-5 flex-1 animate-pulse rounded-md bg-muted"></div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  } @else if (tx(); as tx) {
+  <div class="flex items-center gap-3">
+    <h1 class="text-xl font-semibold text-foreground">{{ tx.documentCode }}</h1>
+    <app-status-badge [status]="tx.status" />
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 lg:grid-cols-10">
+    <div class="flex flex-col gap-4" [class]="tx.status === 'SENT' ? 'lg:col-span-7' : 'lg:col-span-10'">
+
+      <app-info-card title="Thông tin giao dịch">
+        <app-info-grid>
+          <app-info-row label="Mã giao dịch">
+            <span class="font-mono">{{ tx.transactionCode }}</span>
+          </app-info-row>
+          <app-info-row label="Số hiệu văn bản">{{ tx.documentCode }}</app-info-row>
+          <app-info-row [fullWidth]="true" label="Tiêu đề">{{ tx.title }}</app-info-row>
+          <app-info-row label="Trạng thái">
+            <app-status-badge [status]="tx.status" />
+          </app-info-row>
+          <app-info-row label="Ngày gửi">{{ tx.createdAt | localDate: 'dd/MM/yyyy HH:mm' }}</app-info-row>
+          <app-info-row label="Đơn vị gửi">
+            <span class="block text-foreground">{{ tx.sender.name }}</span>
+            <span class="block font-mono text-xs text-text-muted">{{ tx.sender.interopCode }}</span>
+          </app-info-row>
+          <app-info-row label="Đơn vị nhận">
+            <span class="block text-foreground">{{ tx.receiver.name }}</span>
+            <span class="block font-mono text-xs text-text-muted">{{ tx.receiver.interopCode }}</span>
+          </app-info-row>
+          <app-info-row [fullWidth]="true" label="File reference">
+            <div class="flex flex-wrap items-center gap-3">
+              <a [href]="tx.fileReference" target="_blank" rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 break-all text-sm text-primary hover:underline">
+                {{ tx.fileReference }}
+                <svg class="size-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+              </a>
+              <a [href]="tx.fileReference" target="_blank" rel="noopener noreferrer">
+                <button type="button"
+                  class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border px-3 text-[13px] font-medium text-foreground hover:bg-muted">
+                  Mở file
+                </button>
+              </a>
+            </div>
+          </app-info-row>
+          @if (tx.note) {
+          <app-info-row [fullWidth]="true" label="Ghi chú">{{ tx.note }}</app-info-row>
+          }
+        </app-info-grid>
+      </app-info-card>
+
+      @if (tx.status === 'REJECTED' && tx.history[tx.history.length - 1]?.reason) {
+      <div class="rounded-[10px] border border-destructive/20 bg-destructive/5 p-4">
+        <p class="text-[13px] font-medium text-destructive">Lý do từ chối</p>
+        <p class="mt-1 text-sm leading-6 text-foreground">{{ tx.history[tx.history.length - 1]?.reason }}</p>
+      </div>
+      }
+
+      @if (tx.status === 'CANCELLED' && tx.history[tx.history.length - 1]?.reason) {
+      <div class="rounded-[10px] border border-border bg-muted p-4">
+        <p class="text-[13px] font-medium text-text-secondary">Lý do thu hồi</p>
+        <p class="mt-1 text-sm leading-6 text-foreground">{{ tx.history[tx.history.length - 1]?.reason }}</p>
+      </div>
+      }
+
+      <app-info-card title="Lịch sử trạng thái">
+        <ol class="relative">
+          @for (entry of tx.history; track $index; let last = $last) {
+          <li class="relative flex gap-4 pb-6 last:pb-0">
+            @if (!last) {
+            <span class="absolute left-1.25 top-4 h-full w-px bg-border" aria-hidden="true"></span>
+            }
+            <span
+              class="relative mt-1.5 size-2.75 shrink-0 rounded-full border-2 border-surface bg-primary ring-1 ring-border"
+              aria-hidden="true"></span>
+            <div class="flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <app-status-badge [status]="entry.toStatus" />
+                <span class="text-xs text-text-muted">{{ entry.actedAt | localDate: 'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <p class="mt-1 text-xs text-text-secondary">{{ entry.actedBy.email }}</p>
+              @if (entry.reason) {
+              <p class="mt-1 text-sm leading-6 text-foreground">{{ entry.reason }}</p>
+              }
+            </div>
+          </li>
+          }
+        </ol>
+      </app-info-card>
+    </div>
+
+    @if (tx.status === 'SENT') {
+    <div class="lg:col-span-3">
+      <div
+        class="rounded-[10px] border border-border bg-surface p-4 shadow-[0_1px_3px_rgba(0,0,0,0.06)] lg:sticky lg:top-20">
+        <h2 class="mb-4 text-sm font-semibold text-foreground">Thao tác</h2>
+        <button type="button"
+          class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-destructive px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/5 disabled:pointer-events-none disabled:opacity-50"
+          [disabled]="cancelling()" (click)="showCancelDialog.set(true)">
+          <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+          </svg>
+          Thu hồi
+        </button>
+        <p class="mt-2 text-xs leading-5 text-text-muted">Thu hồi yêu cầu gửi văn bản này.</p>
+      </div>
+    </div>
+    }
+  </div>
+  }
+</div>
+
+<app-confirm-dialog [open]="showCancelDialog()" title="Thu hồi văn bản" description="Vui lòng nhập lý do thu hồi."
+  confirmLabel="Thu hồi" [requireReason]="true" reasonLabel="Lý do thu hồi" iconTone="warning" [loading]="cancelling()"
+  (confirm)="onCancel($event)" (openChange)="showCancelDialog.set($event)" />

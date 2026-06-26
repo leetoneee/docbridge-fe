@@ -3,6 +3,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CurrentUserService } from '../../../core/services/current-user.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { InteropUnitApiService } from '../../../features/interop-unit/services/interop-unit-api.service';
+import { RoleBadgeComponent } from '../../../shared/components/role-badge/role-badge';
 
 interface NavItem {
   label: string;
@@ -13,7 +14,7 @@ interface NavItem {
 
 @Component({
   selector: 'app-portal-sidebar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, RoleBadgeComponent],
   templateUrl: './portal-sidebar.html',
   styleUrl: './portal-sidebar.css',
 })
@@ -23,6 +24,8 @@ export class PortalSidebar implements OnInit {
   private auth = inject(AuthService);
   private unitApi = inject(InteropUnitApiService);
 
+  readonly role = signal(this.currentUser.role() ?? 'UNIT');
+  
   unitName = signal('Đang tải...');
   unitInteropCode = signal('');
   unitLoading = signal(true);

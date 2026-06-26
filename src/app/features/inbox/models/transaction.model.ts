@@ -10,11 +10,16 @@ export interface TransactionUnit {
   name: string;
 }
 
+export interface TransactionActedBy {
+  id: number;
+  email: string;
+}
+
 export interface TransactionHistory {
   fromStatus: TransactionStatus;
   toStatus: TransactionStatus;
   reason: string | null;
-  actedBy: number;
+  actedBy: TransactionActedBy;
   actedAt: LocalDateTimeArray;
 }
 

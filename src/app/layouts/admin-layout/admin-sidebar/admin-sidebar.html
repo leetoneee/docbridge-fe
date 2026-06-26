@@ -100,9 +100,8 @@
       </span>
       <div class="min-w-0">
         <p class="truncate text-[13px] font-medium text-foreground">{{ currentUser.email() }}</p>
-        <p 
-          class="bg-status-sent-bg inline-flex h-4 items-center rounded-full px-1.5 text-[11px] font-medium text-[#1D4ED8]">
-          {{ currentUser.roleLabel() }}</p>
+        <app-role-badge [roleCode]="role()"></app-role-badge>
+
       </div>
     </div>
     <div class="mt-1 flex flex-col gap-0.5">

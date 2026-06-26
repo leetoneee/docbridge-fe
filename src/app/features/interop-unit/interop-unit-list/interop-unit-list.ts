@@ -189,7 +189,6 @@ export class InteropUnitList {
 
   openAdd() {
     this.addOpen.set(true);
-    // TODO: nối <app-add-interop-unit-modal> khi có code v0
   }
 
   askToggleLock(unit: InteropUnit) {

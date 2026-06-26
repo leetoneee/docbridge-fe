@@ -17,8 +17,8 @@ interface RouteLabelConfig {
 }
 
 const ROUTE_LABELS: Record<string, RouteLabelConfig> = {
-  inbox: { label: 'Hộp thư đến' },
-  outbox: { label: 'Hộp thư đi' },
+  inbox: { label: 'Hộp thư đến', group: 'Văn bản' },
+  outbox: { label: 'Hộp thư đi', group: 'Văn bản' },
 };
 
 const DETAIL_LABEL = 'Chi tiết';
