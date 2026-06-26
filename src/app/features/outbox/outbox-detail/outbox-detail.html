@@ -127,9 +127,9 @@
         class="rounded-[10px] border border-border bg-surface p-4 shadow-[0_1px_3px_rgba(0,0,0,0.06)] lg:sticky lg:top-20">
         <h2 class="mb-4 text-sm font-semibold text-foreground">Thao tác</h2>
         <button type="button"
-          class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-destructive px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/5 disabled:pointer-events-none disabled:opacity-50"
-          [disabled]="cancelling()" (click)="showCancelDialog.set(true)">
-          <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+          class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-destructive px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/5"
+          (click)="showCancelModal.set(true)">
+          <svg icon class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
           </svg>
@@ -143,6 +143,5 @@
   }
 </div>
 
-<app-confirm-dialog [open]="showCancelDialog()" title="Thu hồi văn bản" description="Vui lòng nhập lý do thu hồi."
-  confirmLabel="Thu hồi" [requireReason]="true" reasonLabel="Lý do thu hồi" iconTone="warning" [loading]="cancelling()"
-  (confirm)="onCancel($event)" (openChange)="showCancelDialog.set($event)" />
+<app-cancel-outbox-modal [open]="showCancelModal()" [tx]="tx()" (openChange)="onCancelModalOpenChange($event)"
+  (cancelled)="onCancelModalOpenChange(false)" />

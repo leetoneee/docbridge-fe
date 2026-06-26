@@ -1,0 +1,47 @@
+<app-modal title="Thu hồi yêu cầu gửi văn bản" [open]="open()" (openChange)="close()">
+  <svg icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+    class="size-5 text-destructive">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+  </svg>
+
+  <div class="flex flex-col gap-4">
+    <p class="text-sm leading-6 text-text-secondary">
+      Văn bản sẽ được thu hồi và không thể gửi lại. Hành động này không thể hoàn tác.
+    </p>
+
+    <!-- Reason textarea -->
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-medium text-foreground">
+        Lý do thu hồi <span class="text-destructive">*</span>
+      </label>
+      <textarea rows="3" placeholder="Nhập lý do thu hồi..." [value]="reason()" (input)="onReasonInput($event)"
+        class="w-full rounded-lg border border-input bg-surface px-3 py-2 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 resize-none"></textarea>
+    </div>
+
+    <!-- Error -->
+    @if (errorMessage()) {
+    <div class="rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2">
+      <p class="text-sm text-destructive">{{ errorMessage() }}</p>
+    </div>
+    }
+  </div>
+
+  <div footer class="flex items-center justify-end gap-2">
+    <button type="button"
+      class="inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-60"
+      [disabled]="submitting()" (click)="close()">
+      Huỷ
+    </button>
+    <button type="button"
+      class="inline-flex h-9 items-center gap-1.5 rounded-lg bg-destructive px-3 text-sm font-medium text-white hover:bg-destructive/90 disabled:opacity-60"
+      [disabled]="submitting() || !reason().trim()" (click)="onConfirm()">
+      @if (submitting()) {
+      <svg class="size-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+      </svg>
+      }
+      Xác nhận thu hồi
+    </button>
+  </div>
+</app-modal>

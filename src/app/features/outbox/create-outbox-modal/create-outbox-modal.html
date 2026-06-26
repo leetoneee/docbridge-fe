@@ -122,6 +122,12 @@
         class="w-full resize-none rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"></textarea>
     </div>
 
+    @if (errors().api) {
+    <div class="rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2">
+      <p class="text-sm text-destructive">{{ errors().api }}</p>
+    </div>
+    }
+
   </div>
 
   <div footer class="flex items-center justify-end gap-2">

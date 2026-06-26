@@ -162,8 +162,12 @@
               </span>
             </td>
 
+            <!-- Tiêu đề -->
             <td class="p-2 align-middle max-w-70">
-              <span class="block truncate font-medium text-foreground" [title]="tx.title">
+              <span class="block truncate font-medium text-foreground" [title]="tx.title"
+              [class]="isUnprocessed(tx)
+                    ? 'font-semibold text-foreground'
+                    : 'text-text-secondary'">
                 {{ tx.title }}
               </span>
             </td>

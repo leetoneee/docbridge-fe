@@ -9,17 +9,20 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InfoCardComponent } from '../../../shared/components/info-card/info-card/info-card';
 import { InfoGridComponent } from '../../../shared/components/info-card/info-grid/info-grid';
 import { InfoRowComponent } from '../../../shared/components/info-card/info-row/info-row';
+import { AcceptInboxModal } from '../accept-inbox-modal/accept-inbox-modal';
+import { RejectInboxModal } from '../reject-inbox-modal/reject-inbox-modal';
 
 @Component({
   selector: 'app-inbox-detail',
   standalone: true,
   imports: [
     StatusBadgeComponent,
-    ConfirmDialog,
     LocalDatePipe,
     InfoCardComponent,
     InfoGridComponent,
     InfoRowComponent,
+    AcceptInboxModal,
+    RejectInboxModal,
   ],
   templateUrl: './inbox-detail.html',
   styleUrl: './inbox-detail.css',
@@ -32,17 +35,11 @@ export class InboxDetail implements OnInit {
 
   tx = signal<Transaction | null>(null);
   loading = signal(true);
-  accepting = signal(false);
-  rejecting = signal(false);
+  // accepting = signal(false);
+  // rejecting = signal(false);
 
-  showAcceptConfirm = signal(false); // đổi sang signal
-  showRejectDialog = signal(false); // đổi sang signal
-
-  acceptDescription = computed(() => {
-    const t = this.tx();
-    if (!t) return 'Xác nhận đã tiếp nhận văn bản này. Hành động này không thể hoàn tác.';
-    return `Xác nhận tiếp nhận văn bản ${t.documentCode} từ ${t.sender.name}. Hành động này không thể hoàn tác.`;
-  });
+  showAcceptModal = signal(false); // đổi sang signal
+  showRejectModal = signal(false); // đổi sang signal
 
   private transactionCode = '';
 
@@ -68,40 +65,14 @@ export class InboxDetail implements OnInit {
       });
   }
 
-  onAccept() {
-    if (!this.tx()) return;
-    this.accepting.set(true);
-    this.api
-      .accept(this.transactionCode, this.tx()!.version)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.accepting.set(false);
-          this.showAcceptConfirm.set(false);
-          this.loadDetail();
-        },
-        error: () => {
-          this.accepting.set(false);
-        },
-      });
+  onAcceptModalOpenChange(isOpen: boolean) {
+    this.showAcceptModal.set(isOpen);
+    if (!isOpen) this.loadDetail();
   }
 
-  onReject(reason: string | undefined) {
-    if (!this.tx() || !reason) return;
-    this.rejecting.set(true);
-    this.api
-      .reject(this.transactionCode, this.tx()!.version, reason)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.rejecting.set(false);
-          this.showRejectDialog.set(false);
-          this.loadDetail();
-        },
-        error: () => {
-          this.rejecting.set(false);
-        },
-      });
+  onRejectModalOpenChange(isOpen: boolean) {
+    this.showRejectModal.set(isOpen);
+    if (!isOpen) this.loadDetail();
   }
 
   goBack() {

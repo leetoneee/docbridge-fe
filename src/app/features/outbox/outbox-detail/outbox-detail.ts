@@ -9,17 +9,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InfoRowComponent } from '../../../shared/components/info-card/info-row/info-row';
 import { InfoGridComponent } from '../../../shared/components/info-card/info-grid/info-grid';
 import { InfoCardComponent } from '../../../shared/components/info-card/info-card/info-card';
+import { CancelOutboxModal } from '../cancel-outbox-modal/cancel-outbox-modal';
 
 @Component({
   selector: 'app-outbox-detail',
   standalone: true,
   imports: [
     StatusBadgeComponent,
-    ConfirmDialog,
     LocalDatePipe,
     InfoCardComponent,
     InfoGridComponent,
     InfoRowComponent,
+    CancelOutboxModal,
   ],
   templateUrl: './outbox-detail.html',
   styleUrl: './outbox-detail.css',
@@ -32,9 +33,9 @@ export class OutboxDetail implements OnInit {
 
   tx = signal<Transaction | null>(null);
   loading = signal(true);
-  cancelling = signal(false);
+  // cancelling = signal(false);
 
-  showCancelDialog = signal(false); // đổi sang signal
+  showCancelModal = signal(false); // đổi sang signal
 
   private transactionCode = '';
 
@@ -60,22 +61,9 @@ export class OutboxDetail implements OnInit {
       });
   }
 
-  onCancel(reason: string | undefined) {
-    if (!this.tx() || !reason) return;
-    this.cancelling.set(true);
-    this.api
-      .cancel(this.transactionCode, this.tx()!.version, reason)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.cancelling.set(false);
-          this.showCancelDialog.set(false);
-          this.loadDetail();
-        },
-        error: () => {
-          this.cancelling.set(false);
-        },
-      });
+  onCancelModalOpenChange(isOpen: boolean) {
+    this.showCancelModal.set(isOpen);
+    if (!isOpen) this.loadDetail();
   }
 
   goBack() {

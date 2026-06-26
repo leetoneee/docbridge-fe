@@ -1,4 +1,13 @@
-import { Component, DestroyRef, effect, inject, input, output, signal, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+  SimpleChanges,
+} from '@angular/core';
 import { ModalComponent } from '../../../shared/components/modal/modal';
 import { FormsModule } from '@angular/forms';
 import { InteropUnitApiService } from '../../interop-unit/services/interop-unit-api.service';
@@ -7,10 +16,9 @@ import { UnitSummary } from '../../interop-unit/models/interop-unit.model';
 import { debounceTime, distinctUntilChanged, of, Subject, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CreateOutboxPayload } from '../models/outbox.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
-
-type FormErrors = Partial<Record<'documentCode' | 'title' | 'fileReference' | 'receiver', string>>;
-
+type FormErrors = Partial<Record<'documentCode' | 'title' | 'fileReference' | 'receiver' | 'api', string>>;
 @Component({
   selector: 'app-create-outbox-modal',
   standalone: true,
@@ -137,8 +145,12 @@ export class CreateOutboxModal {
           this.openChange.emit(false);
           this.created.emit();
         },
-        error: () => {
+        error: (err: HttpErrorResponse) => {
           this.submitting.set(false);
+          this.errors.update((e) => ({
+            ...e,
+            api: err.error?.message ?? 'Có lỗi xảy ra, vui lòng thử lại.',
+          }));
         },
       });
   }
