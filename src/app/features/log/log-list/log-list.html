@@ -1,0 +1,212 @@
+<div class="flex flex-col space-y-4">
+  <h1 class="text-xl font-semibold text-foreground">Nhật ký hệ thống</h1>
+
+  <div class="rounded-[10px] border border-border bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+
+    <!-- Filter row 1: date range presets -->
+    <div class="flex flex-wrap items-center gap-1.5 border-b border-border p-3">
+      @for (preset of [['today','Hôm nay'],['7d','7 ngày'],['30d','30 ngày'],['all','Tất cả thời gian']]; track preset[0]) {
+      <button type="button" class="h-8 rounded-lg px-3 text-sm font-medium transition-colors" [class]="dateRangePreset() === preset[0]
+            ? 'bg-primary text-primary-foreground'
+            : 'border border-border text-foreground hover:bg-muted'" (click)="setDateRange($any(preset[0]))">
+        {{ preset[1] }}
+      </button>
+      }
+    </div>
+
+    <!-- Filter row 2: additional filters -->
+    <div class="flex flex-wrap items-center gap-2 border-b border-border p-3">
+      <div class="relative min-w-56 flex-1">
+        <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-search-icon lucide-search pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-text-muted">
+          <path d="m21 21-4.34-4.34" />
+          <circle cx="11" cy="11" r="8" />
+        </svg>
+        <input type="text" placeholder="Tìm theo email người thực hiện..."
+          class="h-10 w-full rounded-lg border border-input bg-transparent pl-8 pr-3 text-sm outline-none placeholder:text-text-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          (input)="onEmailInput($event)" />
+      </div>
+
+      <!-- Actions multi-select dropdown -->
+      <div class="relative">
+        <button type="button"
+          class="inline-flex h-10 min-w-36 items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none hover:bg-muted"
+          (click)="actionsDropdownOpen.update(v => !v)">
+          <span>{{ selectedCount() > 0 ? 'Hành động (' + selectedCount() + ')' : 'Hành động' }}</span>
+          <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-chevron-down-icon lucide-chevron-down size-4 text-text-muted">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </button>
+
+        @if (actionsDropdownOpen()) {
+        <div
+          class="absolute left-0 top-full z-20 mt-1 max-h-72 w-52 overflow-y-auto rounded-lg border border-border bg-surface py-1 shadow-lg">
+          @for (action of ALL_ACTIONS; track action) {
+          <label class="flex cursor-pointer items-center gap-2.5 px-3 py-1.5 text-sm hover:bg-muted">
+            <input type="checkbox" class="size-4 cursor-pointer accent-primary" [checked]="action === ALL_ACTION_VALUE
+                      ? selectedActions().size === 0
+                      : selectedActions().has(action)" 
+                      (change)="toggleAction(action)" />
+            {{ action === ALL_ACTION_VALUE ? 'Tất cả' : ACTION_LABEL[action] }}
+          </label>
+          }
+        </div>
+        <!-- backdrop để đóng dropdown -->
+        <div class="fixed inset-0 z-10" (click)="actionsDropdownOpen.set(false)"></div>
+        }
+      </div>
+
+      <div class="relative">
+        <select
+          class="h-10 w-48 appearance-none rounded-lg border border-input bg-transparent py-2 pl-2.5 pr-8 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          (change)="onTargetTypeChange($event)">
+          <option value="">Đối tượng: Tất cả</option>
+          <option value="INTEROP_SYSTEM">Hệ thống liên thông</option>
+          <option value="INTEROP_UNIT">Đơn vị liên thông</option>
+          <option value="ACCOUNT">Tài khoản</option>
+          <option value="TRANSACTION">Giao dịch</option>
+          <option value="ROLE">Role</option>
+        </select>
+        <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-chevron-down-icon lucide-chevron-down pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-text-muted">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </div>
+
+      <div class="relative">
+        <select
+          class="h-10 w-40 appearance-none rounded-lg border border-input bg-transparent py-2 pl-2.5 pr-8 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          (change)="onResultChange($event)">
+          <option value="">Kết quả: Tất cả</option>
+          <option value="SUCCESS">Thành công</option>
+          <option value="FAILURE">Thất bại</option>
+        </select>
+        <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-chevron-down-icon lucide-chevron-down pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-text-muted">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </div>
+
+      <button type="button"
+        class="flex size-9 items-center justify-center rounded-lg border border-border hover:bg-muted"
+        aria-label="Làm mới" (click)="refresh()">
+        <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-refresh-cw-icon lucide-refresh-cw size-4">
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+          <path d="M21 3v5h-5" />
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+          <path d="M8 16H3v5" />
+        </svg>
+      </button>
+    </div>
+
+    @if (loading()) {
+    <div class="flex flex-col space-y-3 p-4">
+      @for (i of [1,2,3,4,5,6,7,8]; track i) {
+      <div class="flex items-center gap-4">
+        <div class="h-5 w-28 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 w-36 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 w-24 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 w-32 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 w-20 animate-pulse rounded-md bg-muted"></div>
+        <div class="h-5 w-24 animate-pulse rounded-md bg-muted"></div>
+      </div>
+      }
+    </div>
+    } @else if (errorMessage()) {
+    <div class="p-6 text-center text-sm text-destructive">{{ errorMessage() }}</div>
+    } @else if (logs().length === 0) {
+    <div class="p-12 text-center text-sm text-text-secondary">Không có nhật ký phù hợp với bộ lọc hiện tại.</div>
+    } @else {
+    <div class="relative w-full overflow-x-auto">
+      <table class="w-full caption-bottom text-sm">
+        <thead>
+          <tr class="border-b border-border">
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Thời gian</th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Người thực hiện</th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Hành động</th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Đối tượng</th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">Kết quả</th>
+            <th class="h-10 px-2 text-left align-middle font-medium text-foreground">IP</th>
+          </tr>
+        </thead>
+        <tbody class="[&_tr:last-child]:border-0">
+          @for (log of logs(); track log.id) {
+          <tr class="cursor-pointer border-b border-border transition-colors hover:bg-muted/50"
+            (click)="openDetail(log)">
+            <td class="p-2 align-middle text-[13px] text-text-secondary whitespace-nowrap">
+              {{ log.createdAt | localDate: 'dd/MM/yyyy HH:mm' }}
+            </td>
+            <td class="p-2 align-middle">
+              <div class="flex flex-col gap-0.5">
+                <span class="text-[13px] text-foreground">{{ log.actorEmail }}</span>
+                <app-role-badge [roleCode]="log.actorRole" class="w-fit"></app-role-badge>
+              </div>
+            </td>
+            <td class="p-2 align-middle">
+              <app-action-badge [action]="log.action"></app-action-badge>
+            </td>
+            <td class="p-2 align-middle">
+              @if (log.targetType) {
+              <div class="flex flex-col gap-0.5">
+                <span class="text-sm text-foreground">{{ TARGET_LABEL[log.targetType] || log.targetType }}</span>
+                <!-- @if (log.targetId) {
+                <span class="font-mono text-xs text-text-muted">{{ log.targetId }}</span>
+                } -->
+              </div>
+              } @else {
+              <span class="text-xs text-text-muted">—</span>
+              }
+            </td>
+            <td class="p-2 align-middle">
+              <app-result-badge [result]="log.result"></app-result-badge>
+            </td>
+            @if (log.ipAddress) {
+            <td class="p-2 align-middle font-mono text-xs text-text-secondary">{{ log.ipAddress }}</td>
+            } @else {
+            <td class="p-2 text-xs font-mono align-middle text-text-muted">—</td>
+            }
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Cursor pagination: chỉ Trước / Sau, không có số trang -->
+    <div class="flex items-center justify-center gap-4 border-t border-border px-4 py-3">
+      <button type="button"
+        class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border px-3 text-sm font-medium disabled:pointer-events-none disabled:opacity-50 hover:bg-muted"
+        [disabled]="!hasPrev()" (click)="goPrev()">
+        <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-chevron-left-icon lucide-chevron-left size-4">
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+        Trước
+      </button>
+      <span class="text-xs text-text-secondary">
+        Hiển thị {{ logs().length }} mục
+      </span>
+      <button type="button"
+        class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border px-3 text-sm font-medium disabled:pointer-events-none disabled:opacity-50 hover:bg-muted"
+        [disabled]="!hasMore()" (click)="goNext()">
+        Sau
+        <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-chevron-right-icon lucide-chevron-right size-4">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
+    </div>
+    }
+  </div>
+</div>
+
+<app-log-detail-modal [open]="!!selectedLog()" [log]="selectedLog()"
+  (openChange)="onDetailOpenChange($event)"></app-log-detail-modal>

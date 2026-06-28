@@ -15,10 +15,14 @@ import { environment } from '../../../../environments/environment';
 })
 export class AuthApiService {
   private http = inject(HttpClient);
-  private base = `${environment.apiUrl}/api/auth`;
+  private base = `${environment.apiUrl}/api/v1/auth`;
 
   login(body: LoginRequest): Observable<ApiResponse<LoginResponse>> {
     return this.http.post<ApiResponse<LoginResponse>>(`${this.base}/login`, body);
+  }
+
+  logout(): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(`${this.base}/logout`, {});
   }
 
   firstChangePassword(

@@ -1,4 +1,4 @@
-import { LocalDateTimeArray } from '../../interop-system/models/interop-system.model';
+import { LocalDateTimeArray } from "../../../shared/models/local-date-time.model";
 
 export type InteropUnitStatus = 'PENDING' | 'ACTIVE' | 'LOCKED' | 'REJECTED';
 export type AccountStatus = 'PENDING' | 'ACTIVE' | 'LOCKED';

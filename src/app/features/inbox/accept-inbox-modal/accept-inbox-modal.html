@@ -12,7 +12,7 @@
 
     <!-- Summary -->
     @if (tx()) {
-    <div class="rounded-lg bg-muted p-3 space-y-1">
+    <div class="rounded-lg bg-muted p-3 flex flex-col space-y-1">
       <div class="flex items-center justify-between gap-3 py-0.5">
         <span class="text-xs text-text-muted">Số hiệu văn bản</span>
         <span class="text-xs font-medium text-foreground">{{ tx()!.documentCode }}</span>
@@ -42,7 +42,7 @@
       class="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
       [disabled]="submitting()" (click)="onConfirm()">
       @if (submitting()) {
-      <svg class="size-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <svg icon class="size-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
       </svg>

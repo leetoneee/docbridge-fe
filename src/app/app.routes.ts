@@ -54,18 +54,14 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/permission/permission.routes').then((m) => m.PERMISSION_ROUTES),
       },
+      {
+        path: 'logs',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'OPERATOR'] },
+        loadChildren: () => import('./features/log/log.routes').then((m) => m.LOG_ROUTES),
+      },
     ],
   },
-
-  //     {
-  //       path: 'logs',
-  //       canActivate: [roleGuard],
-  //       data: { roles: ['ADMIN', 'OPERATOR'] },
-  //       loadChildren: () =>
-  //         import('./features/log/log.routes').then(m => m.LOG_ROUTES),
-  //     },
-  //   ],
-  // },
 
   // Unit shell — portal layout riêng
   {

@@ -1,6 +1,6 @@
-export type InteropSystemStatus = 'ACTIVE' | 'LOCKED';
+import { LocalDateTimeArray } from "../../../shared/models/local-date-time.model";
 
-export type LocalDateTimeArray = number[];
+export type InteropSystemStatus = 'ACTIVE' | 'LOCKED';
 export interface InteropSystem {
   id: number;
   code: string;

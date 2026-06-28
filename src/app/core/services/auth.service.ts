@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   CurrentUser,
@@ -6,10 +6,13 @@ import {
   LoginResponse,
   RoleCode
 } from '../models/auth.model';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly TOKEN_KEY = 'access_token';
+  private http = inject(HttpClient);
 
   // Signal — source of truth cho toàn app
   private _currentUser = signal<CurrentUser | null>(this.initFromStorage());
@@ -36,10 +39,12 @@ export class AuthService {
   // Logout — clear storage + signal + redirect
   // ----------------------------------------------------------------
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    this._currentUser.set(null);
-    this.router.navigate(['/auth/login']);
+    this.http.post(`${environment.apiUrl}/api/v1/auth/logout`, {}).subscribe({
+      complete: () => this.clearSession(),
+      error:    () => this.clearSession(),
+    });
   }
+
 
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
@@ -73,6 +78,12 @@ export class AuthService {
   // ----------------------------------------------------------------
   // Private helpers
   // ----------------------------------------------------------------
+
+  private clearSession(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+    this._currentUser.set(null);
+    this.router.navigate(['/auth/login']);
+  }
 
   // Khởi tạo user từ token trong localStorage khi app load
   private initFromStorage(): CurrentUser | null {

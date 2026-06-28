@@ -1,0 +1,67 @@
+<app-modal [maxWidth]="'700px'" [open]="open()" title="Chi tiết nhật ký" (openChange)="close()">
+  <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="lucide lucide-file-search-icon lucide-file-search size-5 text-primary">
+    <path
+      d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+    <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+    <circle cx="11.5" cy="14.5" r="2.5" />
+    <path d="M13.3 16.3 15 18" />
+  </svg>
+  @if (log(); as l) {
+  <app-info-card>
+    <app-info-grid>
+      <app-info-row label="Thời gian">{{ l.createdAt | localDate: 'dd/MM/yyyy HH:mm' }}</app-info-row>
+      <app-info-row label="Người thực hiện">
+        <span class="font-mono text-[13px]">{{ l.actorEmail }}</span>
+      </app-info-row>
+      <app-info-row label="Vai trò">
+        <app-role-badge [roleCode]="l.actorRole"></app-role-badge>
+      </app-info-row>
+      <app-info-row label="Hành động">
+        <app-action-badge [action]="l.action"></app-action-badge>
+      </app-info-row>
+      @if (l.targetType) {
+      <app-info-row label="Đối tượng">
+        <span class="flex flex-col gap-0.5">
+          <span>{{ TARGET_LABEL[l.targetType] || l.targetType }}</span>
+          <!-- @if (l.targetId) {
+          <span class="font-mono text-xs text-text-muted">{{ l.targetId }}</span>
+          } -->
+        </span>
+      </app-info-row>
+      }
+      <app-info-row label="Kết quả">
+        <app-result-badge [result]="l.result"></app-result-badge>
+      </app-info-row>
+      <app-info-row label="Địa chỉ IP">
+        @if (l.ipAddress) {
+        <span class="font-mono text-xs">{{ l.ipAddress }}</span>
+        } @else {
+        <span class="text-xs font-mono text-text-muted">—</span>
+        }
+
+      </app-info-row>
+    </app-info-grid>
+
+    <div class="mt-2 border-t border-border/70 pt-3">
+      <p class="mb-1 text-[13px] font-medium text-text-secondary">Mô tả</p>
+      <p class="text-sm text-foreground">{{ l.description }}</p>
+    </div>
+
+    @if (l.result === 'FAILURE' && l.failureReason) {
+    <div class="mt-3 rounded-md border border-destructive/20 bg-destructive/5 p-3">
+      <p class="mb-0.5 text-[13px] font-medium text-destructive">Lý do thất bại</p>
+      <p class="text-sm text-destructive">{{ l.failureReason }}</p>
+    </div>
+    }
+  </app-info-card>
+  }
+
+  <div footer class="flex justify-end">
+    <button type="button" class="h-8 w-full rounded-lg px-2.5 text-sm font-medium text-foreground hover:bg-muted"
+      (click)="close()">
+      Đóng
+    </button>
+  </div>
+</app-modal>
