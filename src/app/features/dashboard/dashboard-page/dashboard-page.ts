@@ -200,6 +200,6 @@ export class DashboardPage {
   }
 
   onViewAllTransactions(): void {
-    this.router.navigate(['/logs']); // TODO: chỉnh route khi có màn giao dịch chi tiết
+    this.router.navigate(['/management/logs']);
   }
 }

@@ -1,6 +1,48 @@
 export type StatusKey =
-  | 'ACTIVE' | 'LOCKED' | 'PENDING' | 'REJECTED'
-  | 'SENT' | 'ACCEPTED' | 'CANCELLED';
+  | 'ACTIVE'
+  | 'LOCKED'
+  | 'PENDING'
+  | 'REJECTED'
+  | 'SENT'
+  | 'ACCEPTED'
+  | 'CANCELLED';
+
+export interface StatsOverview {
+  total:            number;
+  sent:             number;
+  accepted:         number;
+  rejected:         number;
+  cancelled:        number;
+  totalActiveUnits: number;
+  pendingUnits:     number;
+}
+
+export interface StatsSystemStat {
+  systemId:   number;
+  systemCode: string;
+  systemName: string;
+  count:      number;
+}
+ 
+export interface StatsTimelineStat {
+  period: string;
+  count:  number;
+}
+ 
+export interface StatsRecentTransaction {
+  transactionCode: string;
+  fromUnit:        string;
+  toUnit:          string;
+  status:          StatusKey;
+  createdAt:       string;
+}
+ 
+export interface TransactionStatsResponse {
+  overview:           StatsOverview;
+  bySystem:           StatsSystemStat[];
+  timeline:           StatsTimelineStat[];
+  recentTransactions: StatsRecentTransaction[];
+}
 
 export interface RecentTransaction {
   code: string;

@@ -236,7 +236,7 @@
     (openChange)="onResetModalOpenChange($event)"></app-reset-password-modal>
   }
 
-  <app-confirm-dialog [open]="!!lockTarget()" [title]="lockDialogTitle()" [description]="lockDialogDescription()"
+  <app-confirm-dialog [errorMessage]="deleteError()" [open]="!!lockTarget()" [title]="lockDialogTitle()" [description]="lockDialogDescription()"
     [confirmLabel]="lockDialogConfirmLabel()" [destructive]="lockDialogDestructive()" [iconTone]="lockDialogTone()"
     [loading]="actionLoading()" (openChange)="lockTarget.set(null)" (confirm)="confirmToggleLock()">
     @if (lockTarget()?.status === 'LOCKED') {

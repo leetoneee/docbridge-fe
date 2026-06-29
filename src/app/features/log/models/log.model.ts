@@ -51,6 +51,7 @@ export const ACTION_LABEL: Record<string, string> = {
   CANCEL:           'Thu hồi',
   GRANT_PERMISSION:  'Cấp quyền',
   REVOKE_PERMISSION: 'Thu hồi quyền',
+  REJECT_TRANSACTION: 'Từ chối văn bản'
 };
 
 export const TARGET_LABEL: Record<string, string> = {

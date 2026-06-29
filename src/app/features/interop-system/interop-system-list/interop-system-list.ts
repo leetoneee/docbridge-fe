@@ -40,6 +40,7 @@ export class InteropSystemList {
   systems = signal<InteropSystem[]>([]);
   loading = signal(true);
   errorMessage = signal<string | null>(null);
+  deleteError = signal('');
 
   searchTerm = signal('');
   statusFilter = signal<StatusFilter>('ALL');
@@ -177,7 +178,10 @@ export class InteropSystemList {
         this.lockTarget.set(null);
         this.loadData();
       },
-      error: () => this.actionLoading.set(false),
+      error: (err) => {
+        this.actionLoading.set(false);
+        this.deleteError.set(err.error.message);
+      },
     });
   }
 
@@ -196,7 +200,10 @@ export class InteropSystemList {
         this.deleteTarget.set(null);
         this.loadData();
       },
-      error: () => this.actionLoading.set(false),
+      error: (err) => {
+        this.actionLoading.set(false);
+        this.deleteError.set(err.error.message);
+      },
     });
   }
 }

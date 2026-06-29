@@ -61,6 +61,7 @@ export class InteropUnitDetail implements OnInit {
   loading = signal(true);
   loadError = signal<string | null>(null);
   accountLockTarget = signal(false);
+  deleteError = signal('');
 
   accountLockDialogTitle = computed(() =>
     this.accountIsLocked() ? 'Mở khoá tài khoản' : 'Khoá tài khoản',
@@ -215,6 +216,7 @@ export class InteropUnitDetail implements OnInit {
       },
       error: (err) => {
         this.actionLoading.set(false);
+        this.deleteError.set(err.error.message);
         this.actionError.set(err?.error?.message ?? 'Không thể thực hiện. Vui lòng thử lại.');
       },
     });
@@ -243,6 +245,7 @@ export class InteropUnitDetail implements OnInit {
       },
       error: (err) => {
         this.actionLoading.set(false);
+        this.deleteError.set(err.error.message)
         this.actionError.set(err?.error?.message ?? 'Không thể thực hiện. Vui lòng thử lại.');
       },
     });
@@ -264,6 +267,7 @@ export class InteropUnitDetail implements OnInit {
       error: (err) => {
         this.actionLoading.set(false);
         this.deleteTarget.set(false);
+        this.deleteError.set(err.error.message)
         // VD lỗi từ BE: "Không thể xoá đơn vị có giao dịch"
         this.actionError.set(err?.error?.message ?? 'Không thể xoá đơn vị. Vui lòng thử lại.');
       },

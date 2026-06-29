@@ -17,6 +17,7 @@ export class RejectUnitModal {
 
   openChange = output<boolean>();
   rejected = output<void>();
+  deleteError = signal('');
 
   submitting = signal(false);
 
@@ -29,9 +30,9 @@ export class RejectUnitModal {
         this.openChange.emit(false);
         this.rejected.emit();
       },
-      error: () => {
+      error: (err) => {
         this.submitting.set(false);
-        // TODO: ConfirmDialog hiện chưa có vùng hiển thị lỗi riêng, cân nhắc bổ sung nếu cần báo lỗi rõ ràng hơn
+        this.deleteError.set(err.error.message);
       },
     });
   }

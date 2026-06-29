@@ -1,4 +1,4 @@
-<app-confirm-dialog [open]="open()" title="Từ chối đơn vị liên thông"
+<app-confirm-dialog [errorMessage]="deleteError()" [open]="open()" title="Từ chối đơn vị liên thông"
   description="Hành động này sẽ từ chối yêu cầu tham gia của đơn vị." [requireReason]="true" reasonLabel="Lý do từ chối"
   reasonPlaceholder="Nhập lý do từ chối..." confirmLabel="Xác nhận từ chối" cancelLabel="Huỷ" [loading]="submitting()"
   (openChange)="openChange.emit($event)" (confirm)="onConfirm($event)">

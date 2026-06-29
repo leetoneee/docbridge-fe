@@ -308,7 +308,7 @@
   (openChange)="resetPasswordOpen.set($event)"></app-reset-password-modal>
 }
 
-<app-confirm-dialog [open]="lockTarget()" [title]="lockDialogTitle()" [description]="lockDialogDescription()"
+<app-confirm-dialog [errorMessage]="deleteError()" [open]="lockTarget()" [title]="lockDialogTitle()" [description]="lockDialogDescription()"
   [confirmLabel]="lockDialogConfirmLabel()" [destructive]="lockDialogDestructive()" [iconTone]="lockDialogTone()"
   [loading]="actionLoading()" (openChange)="lockTarget.set(false)" (confirm)="confirmToggleLock()">
   @if (u.status === 'LOCKED') {
@@ -328,7 +328,7 @@
   }
 </app-confirm-dialog>
 
-<app-confirm-dialog [open]="deleteTarget()" title="Xoá đơn vị liên thông" [description]="deleteDialogDescription()"
+<app-confirm-dialog [errorMessage]="deleteError()" [open]="deleteTarget()" title="Xoá đơn vị liên thông" [description]="deleteDialogDescription()"
   confirmLabel="Xoá đơn vị" [loading]="actionLoading()" (openChange)="deleteTarget.set(false)"
   (confirm)="confirmDelete()">
   <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -342,7 +342,7 @@
   </svg>
 </app-confirm-dialog>
 
-<app-confirm-dialog [open]="accountLockTarget()" [title]="accountLockDialogTitle()"
+<app-confirm-dialog [errorMessage]="deleteError()" [open]="accountLockTarget()" [title]="accountLockDialogTitle()"
   [description]="accountLockDialogDescription()" [confirmLabel]="accountLockDialogConfirmLabel()"
   [destructive]="accountLockDialogDestructive()" [iconTone]="accountLockDialogTone()" [loading]="actionLoading()"
   (openChange)="accountLockTarget.set(false)" (confirm)="confirmToggleAccountLock()">

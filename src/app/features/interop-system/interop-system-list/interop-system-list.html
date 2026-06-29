@@ -229,9 +229,10 @@
   <app-interop-system-add [open]="addOpen()" (openChange)="addOpen.set($event)"
     (created)="onCreated($event)"></app-interop-system-add>
 
-  <app-confirm-dialog [open]="!!lockTarget()" [title]="lockDialogTitle()" [description]="lockDialogDescription()"
-    [confirmLabel]="lockDialogConfirmLabel()" [destructive]="lockDialogDestructive()" [iconTone]="lockDialogTone()"
-    [loading]="actionLoading()" (openChange)="lockTarget.set(null)" (confirm)="confirmToggleStatus()">
+  <app-confirm-dialog [errorMessage]="deleteError()" [open]="!!lockTarget()" [title]="lockDialogTitle()"
+    [description]="lockDialogDescription()" [confirmLabel]="lockDialogConfirmLabel()"
+    [destructive]="lockDialogDestructive()" [iconTone]="lockDialogTone()" [loading]="actionLoading()"
+    (openChange)="lockTarget.set(null)" (confirm)="confirmToggleStatus()">
     @if (lockTarget()?.status === 'LOCKED') {
     <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -249,7 +250,7 @@
     }
   </app-confirm-dialog>
 
-  <app-confirm-dialog [open]="!!deleteTarget()" title="Xoá hệ thống liên thông"
+  <app-confirm-dialog [errorMessage]="deleteError()" [open]="!!deleteTarget()" title="Xoá hệ thống liên thông"
     [description]="deleteDialogDescription()" confirmLabel="Xoá hệ thống" [loading]="actionLoading()"
     (openChange)="deleteTarget.set(null)" (confirm)="confirmDelete()">
     <svg icon xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"

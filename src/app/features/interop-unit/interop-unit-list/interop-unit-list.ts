@@ -46,6 +46,7 @@ export class InteropUnitList {
   units = signal<InteropUnit[]>([]);
   loading = signal(true);
   errorMessage = signal<string | null>(null);
+  deleteError = signal('');
 
   systemOptions = signal<InteropSystemSummary[]>([]);
 
@@ -206,7 +207,10 @@ export class InteropUnitList {
         this.lockTarget.set(null);
         this.loadData();
       },
-      error: () => this.actionLoading.set(false),
+      error: (err) => {
+        this.actionLoading.set(false);
+        this.deleteError.set(err.error.message);
+      },
     });
   }
 
@@ -224,7 +228,10 @@ export class InteropUnitList {
         this.deleteTarget.set(null);
         this.loadData();
       },
-      error: () => this.actionLoading.set(false),
+      error: (err) => {
+        this.actionLoading.set(false);
+        this.deleteError.set(err.error.message);
+      },
     });
   }
 }

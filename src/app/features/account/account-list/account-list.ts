@@ -45,6 +45,7 @@ export class AccountList {
   accounts = signal<AccountDetail[]>([]);
   loading = signal(true);
   errorMessage = signal<string | null>(null);
+  deleteError = signal('');
 
   emailFilter = signal('');
   roleFilter = signal<RoleFilter>('ALL');
@@ -175,7 +176,10 @@ export class AccountList {
         this.lockTarget.set(null);
         this.loadData();
       },
-      error: () => this.actionLoading.set(false),
+      error: (err) => {
+        this.actionLoading.set(false);
+        this.deleteError.set(err.error.message);
+      },
     });
   }
 

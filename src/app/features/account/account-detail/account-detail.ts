@@ -1,7 +1,10 @@
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { ResetPasswordModal } from '../../interop-unit/reset-password-modal/reset-password-modal';
 import { LocalDatePipe } from '../../../shared/pipes/local-date-pipe';
-import { ConfirmDialog, ConfirmDialogTone } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogTone,
+} from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { RoleBadgeComponent } from '../../../shared/components/role-badge/role-badge';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge';
 import { InfoRowComponent } from '../../../shared/components/info-card/info-row/info-row';
@@ -9,7 +12,7 @@ import { InfoGridComponent } from '../../../shared/components/info-card/info-gri
 import { InfoCardComponent } from '../../../shared/components/info-card/info-card/info-card';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountApiService } from '../services/account-api.service';
-import { AccountDetail as AccountDetailInfo  } from '../models/account.model';
+import { AccountDetail as AccountDetailInfo } from '../models/account.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -40,6 +43,7 @@ export class AccountDetail {
   loading = signal(true);
   loadError = signal<string | null>(null);
   actionLoading = signal(false);
+  deleteError = signal('');
 
   isLocked = computed(() => this.account()?.status === 'LOCKED');
   isUnit = computed(() => this.account()?.roleCode === 'UNIT');
@@ -90,7 +94,10 @@ export class AccountDetail {
         this.lockOpen.set(false);
         this.loadAccount();
       },
-      error: () => this.actionLoading.set(false),
+      error: (err) => {
+        this.actionLoading.set(false);
+        this.deleteError.set(err.error.message);
+      },
     });
   }
 

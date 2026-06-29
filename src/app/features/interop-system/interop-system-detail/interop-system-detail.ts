@@ -5,7 +5,10 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { InfoCardComponent } from '../../../shared/components/info-card/info-card/info-card';
 import { InfoGridComponent } from '../../../shared/components/info-card/info-grid/info-grid';
 import { InfoRowComponent } from '../../../shared/components/info-card/info-row/info-row';
-import { ConfirmDialog, ConfirmDialogTone } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogTone,
+} from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { TabsComponent } from '../../../shared/components/tabs/tabs/tabs';
 import { TabsListComponent } from '../../../shared/components/tabs/tabs-list/tabs-list';
 import { TabsTriggerComponent } from '../../../shared/components/tabs/tabs-trigger/tabs-trigger';
@@ -52,6 +55,7 @@ export class InteropSystemDetail {
   system = signal<InteropSystem | null>(null);
   loading = signal(true);
   loadError = signal<string | null>(null);
+  deleteError = signal('');
 
   editForm = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(255)]],
@@ -222,7 +226,10 @@ export class InteropSystemDetail {
         this.lockTarget.set(false);
         this.loadSystem();
       },
-      error: () => this.actionLoading.set(false),
+      error: (err) => {
+        this.actionLoading.set(false);
+        this.deleteError.set(err.error.message);
+      },
     });
   }
 
@@ -240,7 +247,10 @@ export class InteropSystemDetail {
         this.deleteTarget.set(false);
         this.router.navigate(['/management/systems']);
       },
-      error: () => this.actionLoading.set(false),
+      error: (err) => {
+        this.actionLoading.set(false);
+        this.deleteError.set(err.error.message);
+      },
     });
   }
 }

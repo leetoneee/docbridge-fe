@@ -21,7 +21,8 @@ export class ConfirmDialog {
   requireReason = input<boolean>(false);
   reasonLabel = input<string>('Lý do');
   reasonPlaceholder = input<string>('Nhập lý do...');
-
+  errorMessage = input<string>(''); 
+  
   openChange = output<boolean>();
   confirm = output<string | undefined>();
 
