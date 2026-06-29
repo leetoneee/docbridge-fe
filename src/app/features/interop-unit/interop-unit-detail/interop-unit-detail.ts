@@ -259,7 +259,7 @@ export class InteropUnitDetail implements OnInit {
       next: () => {
         this.actionLoading.set(false);
         this.deleteTarget.set(false);
-        this.router.navigate(['/admin/units']);
+        this.router.navigate(['/management/units']);
       },
       error: (err) => {
         this.actionLoading.set(false);

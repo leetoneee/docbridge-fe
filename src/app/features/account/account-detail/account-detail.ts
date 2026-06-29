@@ -105,6 +105,6 @@ export class AccountDetail {
 
   goToUnit() {
     const unitId = this.account()?.unitInfo?.unitId;
-    if (unitId) this.router.navigate(['/admin/units', unitId]);
+    if (unitId) this.router.navigate(['/management/units', unitId]);
   }
 }

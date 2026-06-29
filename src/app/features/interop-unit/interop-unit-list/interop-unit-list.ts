@@ -184,7 +184,7 @@ export class InteropUnitList {
   }
 
   openDetail(id: number) {
-    this.router.navigate(['/admin/units', id]);
+    this.router.navigate(['/management/units', id]);
   }
 
   openAdd() {

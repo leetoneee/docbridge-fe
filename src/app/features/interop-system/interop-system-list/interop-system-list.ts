@@ -151,7 +151,7 @@ export class InteropSystemList {
   }
 
   openDetail(id: number) {
-    this.router.navigate(['/admin/systems', id]);
+    this.router.navigate(['/management/systems', id]);
   }
 
   openAdd() {

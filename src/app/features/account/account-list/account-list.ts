@@ -154,7 +154,7 @@ export class AccountList {
   }
 
   openDetail(id: number) {
-    this.router.navigate(['/admin/accounts', id]);
+    this.router.navigate(['/management/accounts', id]);
   }
 
   askToggleLock(acc: AccountDetail) {

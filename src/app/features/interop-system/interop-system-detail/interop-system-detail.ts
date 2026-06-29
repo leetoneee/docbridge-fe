@@ -173,8 +173,7 @@ export class InteropSystemDetail {
   }
 
   viewUnit(id: number) {
-    // TODO: route chi tiết đơn vị chưa tồn tại (chờ module Interop Unit - SCR06–09)
-    this.router.navigate(['/admin/units', id]);
+    this.router.navigate(['/management/units', id]);
   }
 
   cancelEdit() {
@@ -239,7 +238,7 @@ export class InteropSystemDetail {
       next: () => {
         this.actionLoading.set(false);
         this.deleteTarget.set(false);
-        this.router.navigate(['/admin/systems']);
+        this.router.navigate(['/management/systems']);
       },
       error: () => this.actionLoading.set(false),
     });

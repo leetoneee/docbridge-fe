@@ -17,7 +17,7 @@
 
   <!-- Nav -->
   <nav class="flex-1 overflow-y-auto pb-2">
-    @for (group of navGroups; track group.label) {
+    @for (group of visibleNavGroups; track group.label) {
     <p class="px-4 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
       {{ group.label }}
     </p>

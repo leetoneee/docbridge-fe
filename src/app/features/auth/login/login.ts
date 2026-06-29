@@ -73,7 +73,7 @@ export class Login {
     if (role === 'UNIT') {
       this.router.navigate(['/portal/inbox']);
     } else {
-      this.router.navigate(['/admin/dashboard']);
+      this.router.navigate(['/management/dashboard']);
     }
   }
 
